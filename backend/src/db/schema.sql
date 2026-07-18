@@ -53,8 +53,12 @@ CREATE TABLE IF NOT EXISTS donations (
   status            TEXT NOT NULL DEFAULT 'pending',   -- 'pending' | 'success' | 'failed'
   paystack_plan_code TEXT,
   created_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
-  verified_at       TIMESTAMPTZ
+  verified_at       TIMESTAMPTZ,
+  receipt_sent_at   TIMESTAMPTZ
 );
+
+-- Idempotent add for databases migrated before receipt_sent_at existed.
+ALTER TABLE donations ADD COLUMN IF NOT EXISTS receipt_sent_at TIMESTAMPTZ;
 
 -- ─── Blog / News posts ────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS blog_posts (

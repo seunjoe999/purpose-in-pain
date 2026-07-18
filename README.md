@@ -162,19 +162,24 @@ proof that the same steps will work against **your** local Postgres once you set
 
 ## Placeholders / TODO for the real client to fill in
 
-- **Logo:** The "P with a heart" mark (`frontend/src/components/Logo.tsx`) is an inline SVG
-  recreation based on the brief's description, since no vector logo file was supplied. Swap this
-  component for the real logo file (SVG/PNG) once available.
+- **Logo:** `frontend/public/assets/brand/logo-mark.png` and `logo-full.png` are raster crops taken
+  directly from the client's own campaign artwork (the "mission statement" graphic shared over
+  WhatsApp), with the white background keyed out to transparency. This is real client artwork, not
+  an invented placeholder — but it's a raster crop, not a vector file, so edges may not scale
+  perfectly at very large sizes. Swap for the client's real high-res/vector logo file once
+  available (update `frontend/src/components/Logo.tsx`).
 - **Paystack live keys:** `backend/.env` ships with placeholder `sk_test_...` values. Add real
   Paystack **test** keys to develop against, and only switch to **live** keys
   (`PAYSTACK_SECRET_KEY=sk_live_...`) when ready to accept real donations.
-- **Domain / email:** Contact and volunteer forms currently store submissions in Postgres only
-  (visible in the admin dashboard). Forwarding to `purposeinpain1@gmail.com` — the functional inbox
-  named in the brief — requires SMTP credentials that were not supplied; wiring this up (e.g. via
-  Nodemailer + Gmail App Password, or a transactional email provider) is a documented TODO in
-  `backend/src/routes/contact.ts` and `backend/src/routes/volunteers.ts`. The aspirational
-  `info@pipinitiatives.org` domain email mentioned in the brief is not yet configured — continue
-  using `purposeinpain1@gmail.com` until that's set up.
+- **Email delivery (SMTP):** Now fully wired up (see `backend/src/lib/mailer.ts`) — contact-form
+  and volunteer-signup submissions trigger a notification email to `purposeinpain1@gmail.com`
+  (configurable via `NOTIFICATION_EMAIL`), and successful donations trigger a receipt email to the
+  donor using the exact thank-you text from the brief. **It is inactive until you set
+  `SMTP_HOST` / `SMTP_USER` / `SMTP_PASS` in `backend/.env`** — until then, forms still work fully
+  (submissions are always saved to Postgres and visible in the admin dashboard), email sending is
+  just skipped with a logged warning. See the SMTP section of `backend/.env.example` for Gmail App
+  Password setup instructions. The aspirational `info@pipinitiatives.org` domain email mentioned in
+  the brief is not yet configured — continue using `purposeinpain1@gmail.com` until that's set up.
 - **Team photo-to-name pairing:** The brief explicitly flagged that the mapping between the 8 team
   member names and the extracted headshot files was best-effort / not confirmed. This build pairs
   the 8 names (in the order given in the brief's "Team" section, Director first) with 8 of the

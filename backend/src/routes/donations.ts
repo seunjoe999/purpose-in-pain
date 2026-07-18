@@ -2,10 +2,24 @@ import { Router } from 'express';
 import crypto from 'crypto';
 import { z } from 'zod';
 import { pool } from '../db/pool';
+import { sendMail } from '../lib/mailer';
 
 const router = Router();
 
 const PAYSTACK_BASE_URL = 'https://api.paystack.co';
+
+const DONATION_THANK_YOU_TEXT = `Thank you for sowing into hope. Because of your generosity, a widow will breathe a little easier, a child will move closer to their dreams, and a woman carrying silent pain will be reminded that she is not forgotten. Thank you for choosing to be part of someone's healing story. May God richly bless you.
+
+— Purpose In Pain Initiative CIC`;
+
+async function sendDonationReceipt(donation: { email: string; donor_name: string | null; amount_pence: number; currency: string; frequency: string }) {
+  const amount = (donation.amount_pence / 100).toFixed(2);
+  await sendMail({
+    to: donation.email,
+    subject: 'Thank you for your gift — Purpose In Pain Initiative',
+    text: `Dear ${donation.donor_name || 'friend'},\n\nYour ${donation.frequency === 'monthly' ? 'monthly' : 'one-time'} gift of ${donation.currency} ${amount} has been received.\n\n${DONATION_THANK_YOU_TEXT}`,
+  });
+}
 
 function paystackSecretKey() {
   const key = process.env.PAYSTACK_SECRET_KEY;
@@ -131,7 +145,13 @@ router.get('/verify/:reference', async (req, res) => {
       return res.status(404).json({ error: 'Donation record not found.' });
     }
 
-    res.json({ status, donation: result.rows[0] });
+    const donation = result.rows[0];
+    if (status === 'success' && !donation.receipt_sent_at) {
+      await sendDonationReceipt(donation);
+      await pool.query(`UPDATE donations SET receipt_sent_at = now() WHERE reference = $1`, [reference]);
+    }
+
+    res.json({ status, donation });
   } catch (err: any) {
     res.status(500).json({ error: err.message || 'Failed to verify donation.' });
   }
@@ -153,10 +173,15 @@ router.post('/webhook', async (req: any, res) => {
   if (event?.event === 'charge.success') {
     const reference = event.data?.reference;
     if (reference) {
-      await pool.query(
-        `UPDATE donations SET status = 'success', verified_at = now() WHERE reference = $1`,
+      const result = await pool.query(
+        `UPDATE donations SET status = 'success', verified_at = now() WHERE reference = $1 RETURNING *`,
         [reference]
       );
+      const donation = result.rows[0];
+      if (donation && !donation.receipt_sent_at) {
+        await sendDonationReceipt(donation);
+        await pool.query(`UPDATE donations SET receipt_sent_at = now() WHERE reference = $1`, [reference]);
+      }
     }
   }
 

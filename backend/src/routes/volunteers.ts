@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { pool } from '../db/pool';
+import { sendMail, NOTIFICATION_INBOX } from '../lib/mailer';
 
 const router = Router();
 
@@ -27,9 +28,24 @@ router.post('/', async (req, res) => {
     [full_name, email, phone ?? null, location ?? null, teams, availability ?? null, reason ?? null]
   );
 
-  // NOTE: Notification email to purposeinpain1@gmail.com is a documented TODO —
-  // see README.md "SMTP / email delivery" section. No SMTP credentials were
-  // provided, so we do not fabricate a working email send here.
+  // Best-effort notification email — the sign-up is always safely stored in
+  // the volunteer_signups table (and visible in the admin dashboard) whether
+  // or not SMTP is configured (see backend/.env.example).
+  await sendMail({
+    to: NOTIFICATION_INBOX,
+    subject: `New volunteer sign-up from ${full_name}`,
+    text: [
+      `Name: ${full_name}`,
+      `Email: ${email}`,
+      phone ? `Phone: ${phone}` : null,
+      location ? `Location: ${location}` : null,
+      `Teams: ${teams.join(', ')}`,
+      availability ? `Availability: ${availability}` : null,
+      reason ? `\nWhy they want to volunteer:\n${reason}` : null,
+    ]
+      .filter(Boolean)
+      .join('\n'),
+  });
 
   res.status(201).json({
     message: 'Thank you for signing up to volunteer with Purpose In Pain Initiative CIC. We will be in touch soon.',

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { pool } from '../db/pool';
+import { sendMail, NOTIFICATION_INBOX } from '../lib/mailer';
 
 const router = Router();
 
@@ -22,10 +23,14 @@ router.post('/', async (req, res) => {
     [name, email, message]
   );
 
-  // NOTE: Forwarding to purposeinpain1@gmail.com requires SMTP credentials
-  // that were not supplied — this is documented as a TODO in README.md.
-  // The message is safely stored in the contact_messages table and visible
-  // in the admin dashboard.
+  // Best-effort notification email — the message is always safely stored in
+  // the contact_messages table (and visible in the admin dashboard) whether
+  // or not SMTP is configured (see backend/.env.example).
+  await sendMail({
+    to: NOTIFICATION_INBOX,
+    subject: `New contact message from ${name}`,
+    text: `From: ${name} <${email}>\n\n${message}`,
+  });
 
   res.status(201).json({
     message: 'Thank you for reaching out. Your message has been received and our team will respond soon.',
