@@ -5,13 +5,17 @@ databases:
     user: purpose_in_pain
 
 services:
+  # Single monolith web service: builds the React frontend and the Express
+  # backend in one pass, then the backend serves the built frontend as
+  # static files (see backend/src/index.ts) alongside the /api routes.
+  # Chosen over a 2-service split (separate static site) to fit inside a
+  # free-tier account's limited build-pipeline minutes.
   - type: web
-    name: purpose-in-pain-api
+    name: purpose-in-pain
     runtime: node
     plan: free
-    rootDir: backend
-    buildCommand: npm install && npm run build
-    startCommand: npm run migrate && npm run start
+    buildCommand: cd frontend && npm install && npm run build && cd ../backend && npm install && npm run build
+    startCommand: cd backend && npm run migrate && npm run start
     envVars:
       - key: NODE_ENV
         value: production
@@ -35,28 +39,8 @@ services:
         value: GBP
       - key: SEED_ON_MIGRATE
         value: "true"
-      # Predicted Render URL for the frontend service below (service name ->
-      # https://<name>.onrender.com). If Render appends a random suffix
-      # because this name was taken, update this value in the dashboard to
-      # match the real frontend URL after first deploy.
+      # Same-origin monolith: frontend and API are served from the same
+      # host, so no cross-origin requests happen and this is mostly moot —
+      # kept in sync with the render-assigned URL for completeness/safety.
       - key: ALLOWED_ORIGINS
-        value: https://purpose-in-pain-web.onrender.com
-
-  - type: web
-    name: purpose-in-pain-web
-    runtime: static
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
-    envVars:
-      # Predicted Render URL for the backend service above. If Render
-      # appends a random suffix to purpose-in-pain-api, update this value
-      # (and ALLOWED_ORIGINS on the backend service) in the dashboard, then
-      # trigger a manual redeploy of this static site so the new value is
-      # baked into the built JS bundle (Vite env vars are build-time only).
-      - key: VITE_API_BASE_URL
-        value: https://purpose-in-pain-api.onrender.com/api
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+        value: https://purpose-in-pain.onrender.com
