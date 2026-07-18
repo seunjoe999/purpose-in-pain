@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply font-body text-navy-700 bg-white antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Baloo 2', ui-rounded, sans-serif;
+}
+
+.container-page {
+  @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-3 font-display font-semibold text-white shadow-soft transition hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-navy-700 bg-white px-6 py-3 font-display font-semibold text-navy-700 transition hover:bg-navy-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-navy-700 focus:ring-offset-2;
+}
+
+.section-heading {
+  @apply font-display text-3xl font-bold text-navy-700 sm:text-4xl;
+}
+
+.card {
+  @apply rounded-2xl border border-navy-50 bg-white p-6 shadow-soft;
+}
+
+input:not([type='checkbox']):not([type='radio']), textarea, select {
+  @apply w-full rounded-xl border border-navy-100 px-4 py-2.5 text-navy-700 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100;
+}
+
+input[type='checkbox'], input[type='radio'] {
+  @apply h-4 w-4 rounded border-navy-100 text-sky-500 focus:ring-sky-400;
+}
+
+label {
+  @apply mb-1 block text-sm font-semibold text-navy-700;
+}

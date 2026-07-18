@@ -1,0 +1,15 @@
+{
+  "name": "purpose-in-pain",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Purpose In Pain Initiative CIC — full website (backend + frontend)",
+  "scripts": {
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "migrate": "npm run migrate:dev --prefix backend",
+    "build": "npm run build --prefix backend && npm run build --prefix frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
