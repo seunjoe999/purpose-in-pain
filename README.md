@@ -201,6 +201,34 @@ proof that the same steps will work against **your** local Postgres once you set
   but hasn't been tested against a live Paystack test account (needs a real test secret key — see
   above).
 
+## Deploying to Render (preview)
+
+This repo includes a `render.yaml` Blueprint that provisions all three pieces in one shot: a free
+Postgres database, the backend as a Node web service, and the frontend as a static site.
+
+1. Push this repo to GitHub (Render Blueprints deploy from a connected Git repo).
+2. In the Render dashboard: **New → Blueprint**, select this repo. Render will detect `render.yaml`
+   and show a preview of the 3 resources it's about to create (`purpose-in-pain-db`,
+   `purpose-in-pain-api`, `purpose-in-pain-web`) — click **Apply**.
+3. First deploy takes a few minutes (backend build → migration → start; frontend build → static
+   publish). Free-tier services spin down after inactivity and take ~30–60s to wake back up on the
+   next request — normal for a preview link, not a bug.
+4. The blueprint predicts each service's URL from its `name:` field
+   (`https://purpose-in-pain-api.onrender.com`, `https://purpose-in-pain-web.onrender.com`) and
+   wires `ALLOWED_ORIGINS` / `VITE_API_BASE_URL` to match. **If Render appends a random suffix to
+   either name** (only happens if those exact names are already taken on Render), update the other
+   service's corresponding env var in the dashboard to the real URL, then trigger a manual redeploy
+   of the frontend (Vite env vars are baked in at build time, so this won't take effect until it
+   rebuilds).
+5. Admin login for the preview: username `admin`, password `PreviewPIP2026!` (set via `render.yaml`
+   — change this in the dashboard Environment tab before sharing the link widely).
+6. `PAYSTACK_SECRET_KEY` ships as a placeholder (`sk_test_placeholder`) so the site deploys without
+   a real Paystack account — the Donate flow will show a real "Invalid key" error from Paystack
+   until you set a real test key in the backend service's Environment tab.
+7. Real SMTP delivery is off by default on this preview (no `SMTP_*` vars set) — forms still work
+   and store to Postgres, just without outbound email. Add `SMTP_HOST`/`SMTP_USER`/`SMTP_PASS` in
+   the backend service's Environment tab to turn it on (see `backend/.env.example`).
+
 ## Content sourcing
 
 All page copy is grounded directly in the client-provided content brief (mission/vision

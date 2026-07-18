@@ -1,0 +1,63 @@
+databases:
+  - name: purpose-in-pain-db
+    plan: free
+    databaseName: purpose_in_pain
+    user: purpose_in_pain
+
+services:
+  - type: web
+    name: purpose-in-pain-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm run migrate && npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: purpose-in-pain-db
+          property: connectionString
+      - key: DB_SSL
+        value: "true"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_USERNAME
+        value: admin
+      # Preview-only default — change this in the Render dashboard
+      # (Environment tab) once real content review begins.
+      - key: ADMIN_PASSWORD
+        value: PreviewPIP2026!
+      - key: PAYSTACK_SECRET_KEY
+        value: sk_test_placeholder
+      - key: PAYSTACK_CURRENCY
+        value: GBP
+      - key: SEED_ON_MIGRATE
+        value: "true"
+      # Predicted Render URL for the frontend service below (service name ->
+      # https://<name>.onrender.com). If Render appends a random suffix
+      # because this name was taken, update this value in the dashboard to
+      # match the real frontend URL after first deploy.
+      - key: ALLOWED_ORIGINS
+        value: https://purpose-in-pain-web.onrender.com
+
+  - type: web
+    name: purpose-in-pain-web
+    runtime: static
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      # Predicted Render URL for the backend service above. If Render
+      # appends a random suffix to purpose-in-pain-api, update this value
+      # (and ALLOWED_ORIGINS on the backend service) in the dashboard, then
+      # trigger a manual redeploy of this static site so the new value is
+      # baked into the built JS bundle (Vite env vars are build-time only).
+      - key: VITE_API_BASE_URL
+        value: https://purpose-in-pain-api.onrender.com/api
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
