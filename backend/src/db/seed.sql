@@ -16,14 +16,14 @@ VALUES
     'A gentle, guided small-group conversation for mothers rediscovering who they are beyond the pain of the postpartum season. Illustrative placeholder — confirm date with the Identity Team.',
     'Zoom (Online)',
     now() + interval '45 days',
-    NULL
+    '/assets/images/value-identity-merch.jpg'
   ),
   (
     'Purpose Workshop: Rebuilding After Motherhood',
     'A practical workshop on career and business mentoring, skills acquisition, and next steps for mothers ready to rebuild. Illustrative placeholder date, to be confirmed.',
     'Zoom (Online)',
     now() + interval '60 days',
-    NULL
+    '/assets/images/value-purpose.jpg'
   )
 ON CONFLICT DO NOTHING;
 

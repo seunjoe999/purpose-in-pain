@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { programs } from '../lib/content';
+import { programs, socialLinks } from '../lib/content';
 
 const gains = [
   'Understanding postpartum mental health',
@@ -40,6 +40,14 @@ export default function Home() {
                 Volunteer With Us
               </Link>
             </div>
+            <a
+              href={socialLinks.community}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-5 inline-block text-sm font-semibold text-sky-300 underline decoration-sky-300/50 underline-offset-4 hover:text-sky-200"
+            >
+              Join the Purpose In Pain Community →
+            </a>
           </div>
           <div className="relative mx-auto max-w-sm lg:max-w-none">
             <img
@@ -101,13 +109,16 @@ export default function Home() {
               <Link
                 key={p.slug}
                 to={`/programs/${p.slug}`}
-                className="card flex flex-col justify-between transition hover:-translate-y-1 hover:shadow-lg"
+                className="card flex flex-col justify-between overflow-hidden p-0 transition hover:-translate-y-1 hover:shadow-lg"
               >
-                <div>
-                  <h3 className="font-display text-xl font-bold text-navy-700">{p.name}</h3>
-                  <p className="mt-2 text-sm text-navy-700/70">{p.mission}</p>
+                <img src={p.image} alt={p.name} className="h-40 w-full object-cover" />
+                <div className="flex flex-1 flex-col justify-between p-6">
+                  <div>
+                    <h3 className="font-display text-xl font-bold text-navy-700">{p.name}</h3>
+                    <p className="mt-2 text-sm text-navy-700/70">{p.mission}</p>
+                  </div>
+                  <span className="mt-4 text-sm font-semibold text-sky-500">Learn more →</span>
                 </div>
-                <span className="mt-4 text-sm font-semibold text-sky-500">Learn more →</span>
               </Link>
             ))}
           </div>

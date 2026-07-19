@@ -28,6 +28,14 @@ export default function ProgramDetail() {
         </div>
       </section>
 
+      <div className="container-page -mt-10 sm:-mt-14">
+        <img
+          src={program.image}
+          alt={program.name}
+          className="mx-auto h-56 w-full max-w-4xl rounded-2xl object-cover shadow-soft sm:h-72"
+        />
+      </div>
+
       <section className="container-page grid gap-10 py-16 sm:py-20 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-5">
           {program.paragraphs.map((para, i) => (

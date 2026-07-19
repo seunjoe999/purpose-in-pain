@@ -5,12 +5,14 @@ export type Program = {
   summary: string;
   paragraphs: string[];
   highlights: string[];
+  image: string;
 };
 
 export const programs: Program[] = [
   {
     slug: 'identity',
     name: 'Identity',
+    image: '/assets/images/value-identity-merch.jpg',
     mission: 'Help people rediscover who they are beyond their pain.',
     summary:
       'Guided mentoring conversations and small groups that help mothers reconnect with themselves after loss, transition, or the disorientation of new motherhood.',
@@ -24,6 +26,7 @@ export const programs: Program[] = [
   {
     slug: 'purpose',
     name: 'Purpose',
+    image: '/assets/images/value-purpose.jpg',
     mission: 'Help people rebuild their lives.',
     summary:
       'Practical support for mothers ready to take their next step — career and business mentoring, skills acquisition, and education or scholarship support.',
@@ -37,6 +40,7 @@ export const programs: Program[] = [
   {
     slug: 'healing',
     name: 'Healing',
+    image: '/assets/images/value-community.jpg',
     mission: 'Emotional, spiritual, and practical support for the whole person.',
     summary:
       'Emotional support, gentle and optional spiritual care, welfare assistance, and consistent follow-up for mothers who need more than a single conversation.',
@@ -50,6 +54,7 @@ export const programs: Program[] = [
   {
     slug: 'womens-reproductive-and-mental-health',
     name: "Women's Reproductive & Mental Health",
+    image: '/assets/images/beyond-birth-flyer.png',
     mission: 'Education, maternal support, and mental health advocacy for women across every stage.',
     summary:
       'Maternal support through pregnancy, birth and postpartum recovery, alongside reproductive health education and coordinated referrals to professional mental health care.',
@@ -139,3 +144,13 @@ export const contactInfo = {
   email: 'purposeinpain1@gmail.com',
   phone: '+44 7459 837086',
 };
+
+// Real Instagram reels shared by the team — no local copy of the video
+// exists, so these link out to Instagram rather than being embedded.
+export const instagramReels = [
+  'https://www.instagram.com/reel/DSSIfIqjRPI/',
+  'https://www.instagram.com/reel/DScbuU-jQJ4/',
+  'https://www.instagram.com/reel/DS7OWeGjF0Q/',
+  'https://www.instagram.com/reel/DTQT6--DXsr/',
+  'https://www.instagram.com/reel/DTklG1tDaZH/',
+];

@@ -17,11 +17,18 @@ export default function Programs() {
       <section className="container-page py-16 sm:py-20">
         <div className="grid gap-8 lg:grid-cols-2">
           {programs.map((p) => (
-            <Link key={p.slug} to={`/programs/${p.slug}`} className="card flex flex-col hover:shadow-lg transition">
-              <h2 className="font-display text-2xl font-bold text-navy-700">{p.name}</h2>
-              <p className="mt-2 text-sm font-semibold text-sky-500">{p.mission}</p>
-              <p className="mt-4 text-sm text-navy-700/80">{p.summary}</p>
-              <span className="mt-6 text-sm font-semibold text-sky-500">Read more →</span>
+            <Link
+              key={p.slug}
+              to={`/programs/${p.slug}`}
+              className="card flex flex-col overflow-hidden p-0 transition hover:shadow-lg"
+            >
+              <img src={p.image} alt={p.name} className="h-48 w-full object-cover" />
+              <div className="flex flex-1 flex-col p-6">
+                <h2 className="font-display text-2xl font-bold text-navy-700">{p.name}</h2>
+                <p className="mt-2 text-sm font-semibold text-sky-500">{p.mission}</p>
+                <p className="mt-4 text-sm text-navy-700/80">{p.summary}</p>
+                <span className="mt-6 text-sm font-semibold text-sky-500">Read more →</span>
+              </div>
             </Link>
           ))}
         </div>
