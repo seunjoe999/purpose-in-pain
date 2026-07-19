@@ -60,6 +60,16 @@ export default function Events() {
                   <span aria-hidden>📍</span> {ev.location}
                 </p>
                 <p className="mt-3 flex-1 text-sm text-navy-700/80">{ev.description}</p>
+                {ev.title.includes('Beyond Birth') && (
+                  <a
+                    href="https://bit.ly/PurposeinpainCIC2026"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-primary mt-4 w-full"
+                  >
+                    Register Now
+                  </a>
+                )}
               </div>
             </div>
           ))}

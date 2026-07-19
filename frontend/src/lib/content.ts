@@ -145,38 +145,45 @@ export const contactInfo = {
   phone: '+44 7459 837086',
 };
 
-// Real Instagram reels shared by the team, by Dr Shalom (@dr.shalom_).
-// No local copy of the video exists, so these link out to Instagram rather
-// than being embedded. Topic/description pulled from each reel's real
-// caption.
+// Real Instagram reels by Dr Shalom (@dr.shalom_) for Purpose In Pain
+// Initiative. Thumbnails are real frames pulled directly from each reel
+// (not stock/placeholder images) and saved locally since Instagram's CDN
+// URLs are signed and expire — the reel itself still only plays on
+// Instagram, so the cards link out to watch it there.
 export const instagramReels = [
   {
     url: 'https://www.instagram.com/reel/DSSIfIqjRPI/',
+    thumbnail: '/assets/images/reel-1.jpg',
     topic: 'What postpartum recovery actually asks of your body',
     description:
       'Postpartum is a season where a woman\'s body is wounded, stretched, and depleted — then asked to rebuild itself from the inside out. On organ shifting, hormonal change, sleep disruption, and why we need to normalise talking about it.',
   },
   {
     url: 'https://www.instagram.com/reel/DScbuU-jQJ4/',
+    thumbnail: '/assets/images/reel-2.jpg',
     topic: '"Postpartum is not six weeks. It is a season."',
     description:
       'Challenging the six-week recovery timeline — healing varies by individual and can take a year or longer. Continued fatigue doesn\'t mean weakness, and still healing doesn\'t mean falling behind.',
   },
   {
     url: 'https://www.instagram.com/reel/DS7OWeGjF0Q/',
+    thumbnail: '/assets/images/reel-3.jpg',
     topic: 'Feelings you should never ignore during postpartum',
     description:
       'Certain postpartum feelings warrant immediate attention — self-sufficiency shouldn\'t come at the cost of your mental health. If you\'re experiencing any of these, please don\'t brush them off.',
   },
   {
     url: 'https://www.instagram.com/reel/DTQT6--DXsr/',
+    thumbnail: '/assets/images/reel-4.jpg',
     topic: '"Postpartum is not \'deliver and disappear.\'"',
     description:
       'Who to call and when: 999/A&E for emergencies (heavy bleeding, chest pain, breathing difficulty, fainting, severe headaches with vision changes), NHS 111 when unsure, or your maternity triage unit for urgent postnatal concerns.',
   },
   {
     url: 'https://www.instagram.com/reel/DTklG1tDaZH/',
-    topic: 'More from Purpose In Pain on Instagram',
-    description: 'Follow along for more postpartum health, identity, and healing content.',
+    thumbnail: '/assets/images/reel-5.jpg',
+    topic: 'Breastfeeding starts with planning, not delivery',
+    description:
+      'Common breastfeeding mistakes to avoid and what to prepare for before delivery — practical insights for expectant and first-time mothers to reduce postpartum overwhelm.',
   },
 ];

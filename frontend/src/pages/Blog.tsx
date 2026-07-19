@@ -80,16 +80,21 @@ export default function Blog() {
                 href={reel.url}
                 target="_blank"
                 rel="noreferrer"
-                className="card flex flex-col gap-3 transition hover:-translate-y-1 hover:shadow-lg"
+                className="card group flex flex-col overflow-hidden p-0 transition hover:-translate-y-1 hover:shadow-lg"
               >
-                <div className="flex items-center gap-2">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sky-100 text-sky-600">
-                    ▶
+                <div className="relative">
+                  <img src={reel.thumbnail} alt={reel.topic} className="aspect-[9/16] w-full object-cover" />
+                  <span className="absolute inset-0 flex items-center justify-center bg-navy-700/0 transition group-hover:bg-navy-700/20">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-xl text-sky-600 shadow-soft">
+                      ▶
+                    </span>
                   </span>
-                  <h3 className="font-display text-sm font-bold text-navy-700">{reel.topic}</h3>
                 </div>
-                <p className="text-sm text-navy-700/70">{reel.description}</p>
-                <span className="mt-auto text-sm font-semibold text-sky-500">Watch the video →</span>
+                <div className="flex flex-1 flex-col gap-2 p-5">
+                  <h3 className="font-display text-sm font-bold text-navy-700">{reel.topic}</h3>
+                  <p className="text-sm text-navy-700/70">{reel.description}</p>
+                  <span className="mt-auto pt-2 text-sm font-semibold text-sky-500">Watch the video →</span>
+                </div>
               </a>
             ))}
           </div>
