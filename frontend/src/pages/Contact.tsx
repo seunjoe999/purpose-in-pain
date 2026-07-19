@@ -77,9 +77,16 @@ export default function Contact() {
               href={socialLinks.community}
               target="_blank"
               rel="noreferrer"
-              className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-sky-300 hover:text-sky-200"
+              className="mt-5 flex items-center gap-3 rounded-2xl bg-white/5 p-2 pr-4 transition hover:bg-white/10"
             >
-              Join the Purpose In Pain Community →
+              <img
+                src="/assets/images/design-1.png"
+                alt="Join the Purpose In Pain Community flyer"
+                className="h-14 w-14 rounded-xl object-cover"
+              />
+              <span className="text-sm font-semibold text-sky-300 hover:text-sky-200">
+                Join the Purpose In Pain Community →
+              </span>
             </a>
           </div>
         </div>

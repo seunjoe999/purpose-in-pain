@@ -44,9 +44,16 @@ export default function Home() {
               href={socialLinks.community}
               target="_blank"
               rel="noreferrer"
-              className="mt-5 inline-block text-sm font-semibold text-sky-300 underline decoration-sky-300/50 underline-offset-4 hover:text-sky-200"
+              className="mt-6 flex items-center gap-3 rounded-2xl bg-white/5 p-2 pr-4 transition hover:bg-white/10"
             >
-              Join the Purpose In Pain Community →
+              <img
+                src="/assets/images/design-1.png"
+                alt="Join the Purpose In Pain Community flyer"
+                className="h-16 w-16 rounded-xl object-cover"
+              />
+              <span className="text-sm font-semibold text-sky-300 underline decoration-sky-300/50 underline-offset-4">
+                Join the Purpose In Pain Community →
+              </span>
             </a>
           </div>
           <div className="relative mx-auto max-w-sm lg:max-w-none">
@@ -183,13 +190,18 @@ export default function Home() {
 
       {/* Are you stuck in pain? CTA banner */}
       <section className="container-page py-16 sm:py-24">
-        <div className="mx-auto max-w-3xl overflow-hidden rounded-3xl shadow-soft">
+        <a
+          href={socialLinks.community}
+          target="_blank"
+          rel="noreferrer"
+          className="mx-auto block max-w-3xl overflow-hidden rounded-3xl shadow-soft transition hover:-translate-y-1 hover:shadow-lg"
+        >
           <img
             src="/assets/images/design-1.png"
             alt="Are you stuck in pain, battling self-doubt, or feeling lost? Join the Purpose In Pain community."
             className="w-full"
           />
-        </div>
+        </a>
       </section>
 
       {/* CTA */}
