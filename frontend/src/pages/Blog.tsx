@@ -69,20 +69,23 @@ export default function Blog() {
               .
             </p>
           </div>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            {instagramReels.map((url, i) => (
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {instagramReels.map((reel) => (
               <a
-                key={url}
-                href={url}
+                key={reel.url}
+                href={reel.url}
                 target="_blank"
                 rel="noreferrer"
-                className="card flex flex-col items-center justify-center gap-2 py-8 text-center transition hover:-translate-y-1 hover:shadow-lg"
+                className="card flex flex-col gap-3 transition hover:-translate-y-1 hover:shadow-lg"
               >
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-sky-100 text-lg text-sky-600">
-                  ▶
-                </span>
-                <span className="text-sm font-semibold text-navy-700">Reel {i + 1}</span>
-                <span className="text-xs text-navy-700/60">Watch on Instagram</span>
+                <div className="flex items-center gap-2">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sky-100 text-sky-600">
+                    ▶
+                  </span>
+                  <h3 className="font-display text-sm font-bold text-navy-700">{reel.topic}</h3>
+                </div>
+                <p className="text-sm text-navy-700/70">{reel.description}</p>
+                <span className="mt-auto text-sm font-semibold text-sky-500">Watch the video →</span>
               </a>
             ))}
           </div>
