@@ -32,7 +32,7 @@ export default function ProgramDetail() {
         <img
           src={program.image}
           alt={program.name}
-          className="mx-auto h-56 w-full max-w-4xl rounded-2xl object-cover shadow-soft sm:h-72"
+          className="mx-auto aspect-square w-full max-w-sm rounded-2xl object-cover shadow-soft"
         />
       </div>
 

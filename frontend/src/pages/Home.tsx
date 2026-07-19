@@ -111,7 +111,7 @@ export default function Home() {
                 to={`/programs/${p.slug}`}
                 className="card flex flex-col justify-between overflow-hidden p-0 transition hover:-translate-y-1 hover:shadow-lg"
               >
-                <img src={p.image} alt={p.name} className="h-40 w-full object-cover" />
+                <img src={p.image} alt={p.name} className="aspect-square w-full object-cover" />
                 <div className="flex flex-1 flex-col justify-between p-6">
                   <div>
                     <h3 className="font-display text-xl font-bold text-navy-700">{p.name}</h3>

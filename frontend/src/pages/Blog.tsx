@@ -41,9 +41,13 @@ export default function Blog() {
 
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {posts?.map((post) => (
-            <Link key={post.id} to={`/blog/${post.slug}`} className="card overflow-hidden p-0 transition hover:shadow-lg">
-              {post.cover_image && <img src={post.cover_image} alt={post.title} className="h-44 w-full object-cover" />}
-              <div className="p-6">
+            <Link
+              key={post.id}
+              to={`/blog/${post.slug}`}
+              className="card flex flex-col overflow-hidden p-0 transition hover:-translate-y-1 hover:shadow-lg"
+            >
+              {post.cover_image && <img src={post.cover_image} alt={post.title} className="aspect-[4/3] w-full object-cover object-top" />}
+              <div className="flex flex-1 flex-col p-6">
                 <p className="text-xs text-navy-700/50">
                   {new Date(post.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
                   {post.author ? ` · ${post.author}` : ''}
