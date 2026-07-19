@@ -116,19 +116,68 @@ export default function Home() {
 
       {/* What participants gain */}
       <section className="container-page py-16 sm:py-24">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="section-heading">What Mothers Gain</h2>
-          <p className="mt-4 text-navy-700/80">
-            Every program is designed around one goal: helping mothers leave with something they can actually use.
-          </p>
-        </div>
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {gains.map((g) => (
-            <div key={g} className="card flex items-start gap-3">
-              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sky-100 text-sky-600">✓</span>
-              <p className="text-sm font-medium text-navy-700">{g}</p>
+        <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+          <div>
+            <h2 className="section-heading">What Mothers Gain</h2>
+            <p className="mt-4 text-navy-700/80">
+              Every program is designed around one goal: helping mothers leave with something they can actually use.
+            </p>
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              {gains.map((g) => (
+                <div key={g} className="card flex items-start gap-3">
+                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sky-100 text-sky-600">
+                    ✓
+                  </span>
+                  <p className="text-sm font-medium text-navy-700">{g}</p>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+          <img
+            src="/assets/images/what-participants-gain.png"
+            alt="What participants gain from Purpose In Pain programs"
+            className="mx-auto max-h-[520px] w-auto rounded-2xl shadow-soft"
+          />
+        </div>
+      </section>
+
+      {/* Our values */}
+      <section className="bg-sky-50/60 py-16 sm:py-24">
+        <div className="container-page">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="section-heading">What We Stand For</h2>
+            <p className="mt-4 text-navy-700/80">
+              Purpose, community, and empowerment — the values behind everything we build.
+            </p>
+          </div>
+          <div className="mt-12 grid gap-6 sm:grid-cols-3">
+            <img
+              src="/assets/images/value-community.jpg"
+              alt="Community — Purpose In Pain Initiative"
+              className="w-full rounded-2xl shadow-soft"
+            />
+            <img
+              src="/assets/images/value-empowerment.jpg"
+              alt="Empowerment — Purpose In Pain Initiative"
+              className="w-full rounded-2xl shadow-soft"
+            />
+            <img
+              src="/assets/images/value-identity-merch.jpg"
+              alt="Identity — Purpose In Pain Initiative branded hoodie"
+              className="w-full rounded-2xl shadow-soft"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Are you stuck in pain? CTA banner */}
+      <section className="container-page py-16 sm:py-24">
+        <div className="mx-auto max-w-3xl overflow-hidden rounded-3xl shadow-soft">
+          <img
+            src="/assets/images/design-1.png"
+            alt="Are you stuck in pain, battling self-doubt, or feeling lost? Join the Purpose In Pain community."
+            className="w-full"
+          />
         </div>
       </section>
 

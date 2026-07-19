@@ -21,6 +21,11 @@ export default function About() {
             self-worth. Through advocacy, support, and empowerment programs, we are committed to transforming lives
             and helping people realize their full potential."
           </p>
+          <img
+            src="/assets/images/mission-statement.png"
+            alt="Purpose In Pain Initiative mission statement graphic"
+            className="mt-4 w-full rounded-xl shadow-soft"
+          />
         </div>
         <div className="card">
           <h2 className="font-display text-2xl font-bold text-navy-700">Our Vision</h2>
@@ -29,6 +34,11 @@ export default function About() {
             purpose, embraces their unique identity, and impacts their community positively, leading to a society of
             transformed and purpose-driven lives."
           </p>
+          <img
+            src="/assets/images/vision-statement.png"
+            alt="Purpose In Pain Initiative vision statement graphic"
+            className="mt-4 w-full rounded-xl shadow-soft"
+          />
         </div>
       </section>
 
@@ -70,6 +80,18 @@ export default function About() {
               </ul>
             </div>
           </div>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2">
+            <img
+              src="/assets/images/problem-gap-solution.png"
+              alt="Purpose In Pain Initiative — the problem, the gap, and our solution"
+              className="w-full rounded-2xl shadow-soft"
+            />
+            <img
+              src="/assets/images/gap-we-are-bridging.png"
+              alt="The gap Purpose In Pain Initiative is bridging"
+              className="w-full rounded-2xl shadow-soft"
+            />
+          </div>
         </div>
       </section>
 
@@ -83,6 +105,11 @@ export default function About() {
               emotional overwhelm, anxiety, depression, loss of identity, burnout, guilt, or feeling "stuck" and
               disconnected from themselves.
             </p>
+            <img
+              src="/assets/images/target-audience-primary.png"
+              alt="Purpose In Pain Initiative primary audience"
+              className="mt-4 w-full rounded-xl shadow-soft"
+            />
           </div>
           <div className="card">
             <h3 className="font-display text-lg font-bold text-navy-700">Secondary Audience</h3>
@@ -90,6 +117,43 @@ export default function About() {
               Caregivers and support systems, women's communities, NGOs and maternal health advocates who want to
               better support the mothers around them.
             </p>
+            <img
+              src="/assets/images/target-audience-secondary.png"
+              alt="Purpose In Pain Initiative secondary audience"
+              className="mt-4 w-full rounded-xl shadow-soft"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-sky-50/60 py-16 sm:py-20">
+        <div className="container-page grid items-center gap-10 lg:grid-cols-2">
+          <img
+            src="/assets/images/sdg-alignment.jpg"
+            alt="Purpose In Pain Initiative alignment with UN Sustainable Development Goals"
+            className="mx-auto max-h-[520px] w-auto rounded-2xl shadow-soft"
+          />
+          <div>
+            <h2 className="section-heading">Our Global Impact Alignment</h2>
+            <p className="mt-4 text-navy-700/80">
+              Our work connects directly to several United Nations Sustainable Development Goals — good health and
+              wellbeing, quality education, gender equality, decent work, reduced inequalities, and strong,
+              supportive communities.
+            </p>
+            <div className="mt-6 rounded-2xl border border-navy-700/10 bg-white p-5 shadow-soft">
+              <p className="text-sm font-semibold uppercase tracking-wide text-sky-500">Recommended reading</p>
+              <div className="mt-3 flex items-center gap-4">
+                <img
+                  src="/assets/images/finding-purpose-ebook.jpg"
+                  alt="Finding Purpose — a 7-day guide to discovering purpose in pain, by Dr Shalom Oluwabusayo Mojere"
+                  className="h-28 w-auto rounded-md shadow-soft"
+                />
+                <p className="text-sm text-navy-700/80">
+                  <span className="font-display font-bold text-navy-700">Finding Purpose</span> — a 7-day
+                  step-by-step guide to discovering purpose in pain, by Dr Shalom Oluwabusayo Mojere.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
