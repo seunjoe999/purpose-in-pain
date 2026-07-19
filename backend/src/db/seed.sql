@@ -5,25 +5,25 @@
 INSERT INTO events (title, description, location, event_date, image)
 VALUES
   (
-    'Beyond Birth: A Live Postpartum Wellness Session',
-    'A one-day, expert-led live session (illustrative placeholder date) walking mothers through recognising early warning signs, identity restoration, and practical self-care tools. Times will be shared in GMT / WAT / EST for our UK, Nigeria and US community.',
+    'Beyond Birth: Mental Health, Identity & Wellness for Mothers',
+    'Our flagship live session, hosted by Dr Shalom Mojere (Founder) with guest experts in maternal medicine and postpartum wellness, walking mothers through recognising early warning signs, identity restoration, and practical self-care tools. Times are shared in GMT / WAT / EST for our UK, Nigeria and US community. (Date below is an illustrative placeholder for the next live run — confirm via our social channels.)',
     'Zoom (Online)',
     now() + interval '30 days',
-    '/assets/images/event-1.jpg'
+    '/assets/images/beyond-birth-flyer.png'
   ),
   (
     'Identity Circle — Small Group Conversation',
     'A gentle, guided small-group conversation for mothers rediscovering who they are beyond the pain of the postpartum season. Illustrative placeholder — confirm date with the Identity Team.',
     'Zoom (Online)',
     now() + interval '45 days',
-    '/assets/images/event-2.jpg'
+    NULL
   ),
   (
     'Purpose Workshop: Rebuilding After Motherhood',
     'A practical workshop on career and business mentoring, skills acquisition, and next steps for mothers ready to rebuild. Illustrative placeholder date, to be confirmed.',
     'Zoom (Online)',
     now() + interval '60 days',
-    '/assets/images/event-3.jpg'
+    NULL
   )
 ON CONFLICT DO NOTHING;
 

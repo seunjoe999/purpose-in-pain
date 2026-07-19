@@ -114,14 +114,14 @@ export const volunteerTeams = [
 ];
 
 export const teamMembers = [
-  { name: 'Pharm Abiola Daniel Mojere', photo: '/assets/team/team-7146.png' },
-  { name: 'Dr Mojere Shalom', photo: '/assets/team/team-7147.png' },
-  { name: 'Tomiwa Dada', photo: '/assets/team/team-7148.png' },
-  { name: 'Chimeremeze Nwokenne', photo: '/assets/team/team-7149.png' },
-  { name: 'Bolude Omolola', photo: '/assets/team/team-7152.png' },
-  { name: 'Yetunde Ladipo', photo: '/assets/team/team-7154.png' },
-  { name: 'Eyitayo Ojo', photo: '/assets/team/team-7155.png' },
-  { name: 'Adewunmi Oluwasegun', photo: '/assets/team/team-7156.png' },
+  { name: 'Pharm Abiola Daniel Mojere', photo: '/assets/team/team-01.jpg' },
+  { name: 'Dr Mojere Shalom', photo: '/assets/team/team-02.jpg' },
+  { name: 'Tomiwa Dada', photo: '/assets/team/team-03.jpg' },
+  { name: 'Chimeremeze Nwokenne', photo: '/assets/team/team-04.jpg' },
+  { name: 'Bolude Omolola', photo: '/assets/team/team-05.jpg' },
+  { name: 'Yetunde Ladipo', photo: '/assets/team/team-06.jpg' },
+  { name: 'Eyitayo Ojo', photo: '/assets/team/team-07.jpg' },
+  { name: 'Adewunmi Oluwasegun', photo: '/assets/team/team-08.jpg' },
 ];
 
 export const donationThankYouNote =

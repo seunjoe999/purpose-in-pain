@@ -57,11 +57,18 @@ export default function Volunteer() {
   return (
     <div>
       <section className="bg-navy-700 py-16 text-white sm:py-20">
-        <div className="container-page">
-          <h1 className="font-display text-4xl font-extrabold sm:text-5xl">Volunteer With Us</h1>
-          <p className="mt-4 max-w-2xl text-white/80">
-            From mentoring to media to prayer, there are many ways to give your time and skills to this mission.
-          </p>
+        <div className="container-page grid items-center gap-10 lg:grid-cols-2">
+          <div>
+            <h1 className="font-display text-4xl font-extrabold sm:text-5xl">Volunteer With Us</h1>
+            <p className="mt-4 max-w-2xl text-white/80">
+              From mentoring to media to prayer, there are many ways to give your time and skills to this mission.
+            </p>
+          </div>
+          <img
+            src="/assets/images/call-for-volunteers.png"
+            alt="Purpose In Pain Initiative — Call for Volunteers"
+            className="mx-auto max-h-96 w-auto rounded-2xl shadow-soft"
+          />
         </div>
       </section>
 
