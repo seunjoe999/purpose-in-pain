@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { apiGet } from '../lib/api';
-import { socialLinks } from '../lib/content';
+import { socialLinks, PAST_EVENT_IDS } from '../lib/content';
 
 type Event = {
   id: string;
@@ -63,8 +63,8 @@ export default function Events() {
   }, []);
 
   const now = Date.now();
-  const upcoming = events?.filter((e) => new Date(e.event_date).getTime() > now) ?? [];
-  const past = events?.filter((e) => new Date(e.event_date).getTime() <= now) ?? [];
+  const upcoming = events?.filter((e) => new Date(e.event_date).getTime() > now && !PAST_EVENT_IDS.has(e.id)) ?? [];
+  const past = events?.filter((e) => new Date(e.event_date).getTime() <= now || PAST_EVENT_IDS.has(e.id)) ?? [];
 
   return (
     <div>
@@ -160,11 +160,11 @@ export default function Events() {
                     <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-navy-700/50">Event Gallery</p>
                     <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">
                       {[
-                        '/assets/images/beyond-birth-flyer.png',
+                        ev.image ?? '/assets/images/beyond-birth-flyer.png',
                         '/assets/images/value-community.jpg',
                         '/assets/images/value-empowerment.jpg',
                         '/assets/images/value-purpose.jpg',
-                        '/assets/images/design-1.png',
+                        '/assets/images/value-identity-merch.jpg',
                         '/assets/images/mission-statement.png',
                       ].map((src, i) => (
                         <a key={i} href={ev.youtube_url ?? socialLinks.youtube} target="_blank" rel="noreferrer" className="group block overflow-hidden rounded-xl">
@@ -176,6 +176,12 @@ export default function Events() {
                         </a>
                       ))}
                     </div>
+                    <p className="mt-3 text-xs text-navy-700/50">
+                      Watch full recordings on our{' '}
+                      <a href={ev.youtube_url ?? socialLinks.youtube} target="_blank" rel="noreferrer" className="font-semibold text-sky-500 hover:underline">
+                        YouTube channel
+                      </a>
+                    </p>
                   </div>
                 </div>
               ))}

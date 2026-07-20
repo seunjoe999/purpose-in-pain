@@ -120,7 +120,7 @@ export const volunteerTeams = [
 
 export const teamMembers = [
   { name: 'Dr Shalom Mojere', photo: '/assets/team/team-01.jpg' },
-  { name: 'Eyitayo Ojo', photo: '/assets/team/team-07.jpg' },
+  { name: 'Abiola Daniel Mojere', photo: '/assets/team/team-07.jpg' },
   { name: 'Dr Yetunde Oladipo', photo: '/assets/team/team-03.jpg' },
   { name: 'Chimeremeze Nwokenne', photo: '/assets/team/team-04.jpg' },
   { name: 'Bolude Omolola', photo: '/assets/team/team-05.jpg' },
@@ -202,6 +202,13 @@ export const recommendedBooks: Book[] = [
     description: 'A 7-day step-by-step guide to discovering purpose in pain.',
   },
 ];
+
+// Event IDs that have already been held but whose database date is still in the
+// future (e.g. the date was a placeholder). Listing an ID here moves it to the
+// Past Events section and removes it from the countdown bar.
+export const PAST_EVENT_IDS = new Set([
+  '693cd0f8-2c1a-4a33-a2f0-859ec11f8fd7', // Beyond Birth: Mental Health, Identity & Wellness for Mothers
+]);
 
 export type Brand = {
   name: string;

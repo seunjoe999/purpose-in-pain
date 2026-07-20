@@ -2,7 +2,7 @@ import { Outlet, useLocation, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import NavBar from './NavBar';
 import Footer from './Footer';
-import { socialLinks } from '../lib/content';
+import { socialLinks, PAST_EVENT_IDS } from '../lib/content';
 import { apiGet } from '../lib/api';
 
 function BrandsSlider() {
@@ -113,7 +113,7 @@ export default function Layout() {
       .then((evs: Event[]) => {
         const now = Date.now();
         const upcoming = evs
-          .filter((e) => new Date(e.event_date).getTime() > now)
+          .filter((e) => new Date(e.event_date).getTime() > now && !PAST_EVENT_IDS.has(e.id))
           .sort((a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime());
         setNextEvent(upcoming[0] ?? null);
       })
