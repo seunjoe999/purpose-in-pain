@@ -169,4 +169,26 @@ router.delete('/events/:id', requireAdmin, async (req, res) => {
   res.status(204).send();
 });
 
+// ── Site Settings (content portal) ────────────────────────────────────────
+
+router.get('/settings', requireAdmin, async (_req, res) => {
+  const result = await pool.query('SELECT key, value FROM site_settings ORDER BY key');
+  const out: Record<string, any> = {};
+  for (const row of result.rows) out[row.key] = row.value;
+  res.json(out);
+});
+
+router.put('/settings/:key', requireAdmin, async (req, res) => {
+  const { key } = req.params;
+  const { value } = req.body;
+  if (value === undefined) return res.status(400).json({ error: 'value is required' });
+  await pool.query(
+    `INSERT INTO site_settings (key, value, updated_at)
+     VALUES ($1, $2::jsonb, now())
+     ON CONFLICT (key) DO UPDATE SET value = $2::jsonb, updated_at = now()`,
+    [key, JSON.stringify(value)]
+  );
+  res.json({ key, value });
+});
+
 export default router;

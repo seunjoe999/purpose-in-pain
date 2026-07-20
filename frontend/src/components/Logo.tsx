@@ -1,7 +1,7 @@
 /**
  * Purpose In Pain Initiative logo. The "P" mark is a raster crop (transparent
  * background) taken from the client's own campaign artwork (source:
- * WhatsApp-shared "mission statement" graphic) — swap for the client's real
+ * WhatsApp-shared "mission statement" graphic) - swap for the client's real
  * vector logo file once they provide one (see README "Placeholders / TODO").
  * The wordmark is set as text (not baked into the image) so its color can
  * adapt to light and dark backgrounds (e.g. the dark footer).

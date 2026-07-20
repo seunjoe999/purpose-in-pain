@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 
+import settingsRouter from './routes/settings';
 import volunteersRouter from './routes/volunteers';
 import contactRouter from './routes/contact';
 import newsletterRouter from './routes/newsletter';
@@ -40,6 +41,7 @@ app.use('/api/newsletter', newsletterRouter);
 app.use('/api/donations', donationsRouter);
 app.use('/api/blog', blogRouter);
 app.use('/api/events', eventsRouter);
+app.use('/api/settings', settingsRouter);
 app.use('/api/admin', adminRouter);
 
 // NOTE: the 404 + error handlers are attached separately via

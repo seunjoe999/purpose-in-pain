@@ -45,8 +45,8 @@ export default function DonateSuccess() {
           <>
             <h1 className="font-display text-2xl font-bold text-navy-700">Donation status unavailable</h1>
             <p className="mt-3 text-navy-700/70">
-              We could not verify this transaction automatically. If you completed a payment, thank you — please
-              contact us if you'd like a confirmation.
+              We could not verify this transaction automatically. If you completed a payment, thank you. Please
+              contact us if you would like a confirmation.
             </p>
           </>
         )}

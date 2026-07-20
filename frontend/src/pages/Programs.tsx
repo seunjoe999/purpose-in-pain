@@ -8,7 +8,7 @@ export default function Programs() {
         <div className="container-page">
           <h1 className="font-display text-4xl font-extrabold sm:text-5xl">Our Programs</h1>
           <p className="mt-4 max-w-2xl text-white/80">
-            Four pillars, one goal: helping mothers move from surviving to thriving — identity, purpose, healing, and
+            Four pillars, one goal: helping mothers move from surviving to thriving. Identity, purpose, healing, and
             reproductive & mental health support.
           </p>
         </div>

@@ -1,22 +1,33 @@
 import { useState } from 'react';
 import { apiPost } from '../lib/api';
 
-const PRESETS = [5, 25, 100];
+const PRESETS_GBP = [5, 25, 100];
+
+const CURRENCIES = [
+  { code: 'GBP', symbol: '£', label: 'GBP (British Pound)', rate: 1 },
+  { code: 'USD', symbol: '$', label: 'USD (US Dollar)', rate: 1.27 },
+  { code: 'EUR', symbol: '€', label: 'EUR (Euro)', rate: 1.17 },
+  { code: 'NGN', symbol: '₦', label: 'NGN (Nigerian Naira)', rate: 2100 },
+];
 
 export default function Donate() {
   const [frequency, setFrequency] = useState<'one-time' | 'monthly'>('one-time');
   const [amount, setAmount] = useState<number>(25);
   const [customAmount, setCustomAmount] = useState('');
+  const [currency, setCurrency] = useState(CURRENCIES[0]);
   const [email, setEmail] = useState('');
   const [donorName, setDonorName] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
   const [error, setError] = useState('');
 
-  const finalAmount = customAmount ? Number(customAmount) : amount;
+  const displayAmount = customAmount ? Number(customAmount) : amount;
+  const gbpAmount = displayAmount / currency.rate;
+
+  const presets = PRESETS_GBP.map((p) => Math.round(p * currency.rate));
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!finalAmount || finalAmount <= 0) {
+    if (!displayAmount || displayAmount <= 0) {
       setError('Please choose or enter a donation amount greater than zero.');
       return;
     }
@@ -27,7 +38,7 @@ export default function Donate() {
       const res = await apiPost('/donations/initialize', {
         email,
         donorName,
-        amountPounds: finalAmount,
+        amountPounds: Math.max(1, Math.round(gbpAmount * 100) / 100),
         frequency,
         callbackUrl,
       });
@@ -36,6 +47,13 @@ export default function Donate() {
       setError(err.message || 'Could not start your donation. Please try again.');
       setStatus('error');
     }
+  }
+
+  function handleCurrencyChange(code: string) {
+    const c = CURRENCIES.find((c) => c.code === code)!;
+    setCurrency(c);
+    setAmount(Math.round(PRESETS_GBP[1] * c.rate));
+    setCustomAmount('');
   }
 
   return (
@@ -69,9 +87,23 @@ export default function Donate() {
             </div>
 
             <div>
-              <label>Amount (GBP)</label>
+              <label htmlFor="currency">Currency</label>
+              <select
+                id="currency"
+                value={currency.code}
+                onChange={(e) => handleCurrencyChange(e.target.value)}
+                className="mt-1 w-full rounded-xl border border-navy-100 bg-white px-4 py-3 text-sm text-navy-700 focus:border-sky-400 focus:outline-none"
+              >
+                {CURRENCIES.map((c) => (
+                  <option key={c.code} value={c.code}>{c.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label>Amount ({currency.code})</label>
               <div className="grid grid-cols-3 gap-3">
-                {PRESETS.map((p) => (
+                {presets.map((p) => (
                   <button
                     type="button"
                     key={p}
@@ -85,7 +117,7 @@ export default function Donate() {
                         : 'border-navy-100 text-navy-700 hover:border-sky-300'
                     }`}
                   >
-                    £{p}
+                    {currency.symbol}{p.toLocaleString()}
                   </button>
                 ))}
               </div>
@@ -95,20 +127,27 @@ export default function Donate() {
                   id="custom"
                   type="number"
                   min={1}
-                  placeholder="e.g. 40"
+                  placeholder={`e.g. ${currency.symbol}${Math.round(40 * currency.rate)}`}
                   value={customAmount}
                   onChange={(e) => setCustomAmount(e.target.value)}
                 />
               </div>
+              {currency.code !== 'GBP' && displayAmount > 0 && (
+                <p className="mt-1 text-xs text-navy-700/50">
+                  Approx. £{gbpAmount.toFixed(2)} GBP (payments processed in GBP)
+                </p>
+              )}
             </div>
 
             <div>
-              <label htmlFor="donorName">Your name</label>
+              <label htmlFor="donorName">
+                Your name <span className="text-xs text-navy-700/40">(optional)</span>
+              </label>
               <input id="donorName" value={donorName} onChange={(e) => setDonorName(e.target.value)} />
             </div>
 
             <div>
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email">Email <span className="text-xs text-red-400">*</span></label>
               <input
                 id="email"
                 type="email"
@@ -123,7 +162,7 @@ export default function Donate() {
             <button type="submit" disabled={status === 'loading'} className="btn-primary w-full">
               {status === 'loading'
                 ? 'Redirecting to secure checkout…'
-                : `Give £${finalAmount || 0}${frequency === 'monthly' ? ' / month' : ''}`}
+                : `Give ${currency.symbol}${(displayAmount || 0).toLocaleString()}${frequency === 'monthly' ? ' / month' : ''}`}
             </button>
 
             <p className="text-center text-xs text-navy-700/50">

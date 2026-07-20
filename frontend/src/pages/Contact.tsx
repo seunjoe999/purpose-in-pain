@@ -26,7 +26,7 @@ export default function Contact() {
         <div className="container-page">
           <h1 className="font-display text-4xl font-extrabold sm:text-5xl">Get In Touch</h1>
           <p className="mt-4 max-w-2xl text-white/80">
-            Questions, partnership ideas, or just want to say hello? We'd love to hear from you.
+            Questions, partnership ideas, or just want to say hello? We would love to hear from you.
           </p>
         </div>
       </section>
@@ -36,7 +36,7 @@ export default function Contact() {
           <div className="card">
             <h2 className="font-display text-xl font-bold text-navy-700">Contact Details</h2>
             <div className="mt-5 space-y-4">
-              <a href={`mailto:${contactInfo.email}`} className="flex items-center gap-3 group">
+              <a href={`mailto:${contactInfo.email}`} className="group flex items-center gap-3">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sky-100 text-lg text-sky-600">
                   ✉
                 </span>
@@ -45,13 +45,27 @@ export default function Contact() {
                   <span className="text-sm font-medium text-navy-700 group-hover:text-sky-600">{contactInfo.email}</span>
                 </span>
               </a>
-              <a href={`tel:${contactInfo.phone.replace(/\s/g, '')}`} className="flex items-center gap-3 group">
+              <a href={`tel:${contactInfo.phone.replace(/\s/g, '')}`} className="group flex items-center gap-3">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sky-100 text-lg text-sky-600">
                   ☎
                 </span>
                 <span>
                   <span className="block text-xs font-semibold uppercase tracking-wide text-navy-700/50">Phone</span>
                   <span className="text-sm font-medium text-navy-700 group-hover:text-sky-600">{contactInfo.phone}</span>
+                </span>
+              </a>
+              <a
+                href={socialLinks.whatsapp}
+                target="_blank"
+                rel="noreferrer"
+                className="group flex items-center gap-3"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-green-100 text-lg text-green-600">
+                  💬
+                </span>
+                <span>
+                  <span className="block text-xs font-semibold uppercase tracking-wide text-navy-700/50">WhatsApp</span>
+                  <span className="text-sm font-medium text-navy-700 group-hover:text-green-600">Chat with us on WhatsApp</span>
                 </span>
               </a>
             </div>
@@ -74,19 +88,15 @@ export default function Contact() {
               </a>
             </div>
             <a
-              href={socialLinks.community}
+              href={socialLinks.whatsapp}
               target="_blank"
               rel="noreferrer"
-              className="mt-5 flex items-center gap-3 rounded-2xl bg-white/5 p-2 pr-4 transition hover:bg-white/10"
+              className="mt-5 flex items-center gap-3 rounded-2xl bg-green-500/20 p-3 pr-5 transition hover:bg-green-500/30"
             >
-              <img
-                src="/assets/images/design-1.png"
-                alt="Join the Purpose In Pain Community flyer"
-                className="h-14 w-14 rounded-xl object-cover"
-              />
-              <span className="text-sm font-semibold text-sky-300 hover:text-sky-200">
-                Join the Purpose In Pain Community →
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-500 text-white text-lg">
+                💬
               </span>
+              <span className="text-sm font-semibold text-white">Chat us on WhatsApp</span>
             </a>
           </div>
         </div>
@@ -104,11 +114,17 @@ export default function Contact() {
             <form onSubmit={handleSubmit} className="card space-y-5">
               <h2 className="font-display text-xl font-bold text-navy-700">Send Us a Message</h2>
               <div>
-                <label htmlFor="name">Name</label>
-                <input id="name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                <label htmlFor="name">
+                  Name <span className="text-xs text-navy-700/40">(optional)</span>
+                </label>
+                <input
+                  id="name"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                />
               </div>
               <div>
-                <label htmlFor="email">Email</label>
+                <label htmlFor="email">Email <span className="text-xs text-red-400">*</span></label>
                 <input
                   id="email"
                   type="email"
@@ -131,6 +147,12 @@ export default function Contact() {
               <button type="submit" disabled={status === 'loading'} className="btn-primary w-full">
                 {status === 'loading' ? 'Sending…' : 'Send Message'}
               </button>
+              <p className="text-center text-xs text-navy-700/50">
+                Prefer to chat directly?{' '}
+                <a href={socialLinks.whatsapp} target="_blank" rel="noreferrer" className="font-semibold text-green-600 hover:underline">
+                  Message us on WhatsApp
+                </a>
+              </p>
             </form>
           )}
         </div>

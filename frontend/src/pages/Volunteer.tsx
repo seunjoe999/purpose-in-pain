@@ -66,7 +66,7 @@ export default function Volunteer() {
           </div>
           <img
             src="/assets/images/call-for-volunteers.png"
-            alt="Purpose In Pain Initiative — Call for Volunteers"
+            alt="Purpose In Pain Initiative: Call for Volunteers"
             className="mx-auto max-h-96 w-auto rounded-2xl shadow-soft"
           />
         </div>

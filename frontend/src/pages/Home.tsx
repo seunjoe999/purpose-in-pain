@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { programs, socialLinks } from '../lib/content';
+import { programs, socialLinks, recommendedBooks, instagramReels } from '../lib/content';
 
 const gains = [
   'Understanding postpartum mental health',
@@ -22,15 +22,15 @@ export default function Home() {
         <div className="container-page relative grid gap-10 py-20 sm:py-28 lg:grid-cols-2 lg:items-center">
           <div>
             <span className="inline-block rounded-full bg-sky-500/15 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-sky-300">
-              Beyond Birth: Mental Health, Identity & Wellness for Mothers
+              Mental Health, Identity & Wellness: Prepartum Through Postpartum
             </span>
             <h1 className="mt-5 font-display text-4xl font-extrabold leading-tight sm:text-5xl">
               Turn Your Pain Into Purpose
             </h1>
             <p className="mt-5 max-w-xl text-lg text-white/80">
-              Purpose In Pain Initiative CIC walks alongside postpartum mothers across the UK, Nigeria and the US —
-              helping them recognise what they're feeling, restore their identity, and find practical tools for
-              healing, without shame.
+              Purpose In Pain Initiative CIC walks alongside mothers across the UK, Nigeria and the US, from prepartum
+              preparation through postpartum recovery, helping them recognise what they're feeling, restore their
+              identity, and find practical tools for healing, without shame.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link to="/donate" className="btn-primary">
@@ -52,7 +52,7 @@ export default function Home() {
                 className="h-16 w-16 rounded-xl object-cover"
               />
               <span className="text-sm font-semibold text-sky-300 underline decoration-sky-300/50 underline-offset-4">
-                Join the Purpose In Pain Community →
+                Join the Purpose In Pain Community
               </span>
             </a>
           </div>
@@ -66,12 +66,67 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Gallery strip: Instagram reels as thumbnail grid */}
+      <section className="bg-navy-900 py-6">
+        <div className="container-page">
+          <div className="mb-3 flex items-center justify-between">
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">Watch Our Videos</p>
+            <Link to="/contact" className="text-xs font-semibold text-sky-400 hover:text-sky-300">
+              Follow us on Social Media
+            </Link>
+          </div>
+          <div className="grid grid-cols-5 gap-2 sm:grid-cols-5">
+            {instagramReels.map((reel) => (
+              <a
+                key={reel.url}
+                href={reel.url}
+                target="_blank"
+                rel="noreferrer"
+                className="group relative overflow-hidden rounded-xl"
+              >
+                <img
+                  src={reel.thumbnail}
+                  alt={reel.topic}
+                  className="aspect-square w-full object-cover transition group-hover:scale-105"
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition group-hover:bg-black/30">
+                  <span className="scale-0 text-2xl text-white transition group-hover:scale-100">▶</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Recommended Books */}
+      <section className="bg-sky-50/60 py-10 sm:py-14">
+        <div className="container-page">
+          <p className="text-sm font-semibold uppercase tracking-wide text-sky-500">Recommended Reading</p>
+          <div className="mt-4 flex flex-wrap gap-6">
+            {recommendedBooks.map((book) => (
+              <Link
+                key={book.slug}
+                to="/shop"
+                className="flex items-center gap-4 rounded-2xl border border-navy-100 bg-white p-3 pr-5 shadow-soft transition hover:-translate-y-0.5 hover:shadow-md"
+              >
+                <img src={book.cover} alt={book.title} className="h-20 w-auto rounded-md shadow-soft" />
+                <div>
+                  <p className="font-display text-sm font-bold text-navy-700">{book.title}</p>
+                  <p className="text-xs text-navy-700/60">{book.author}</p>
+                  <p className="mt-1 text-xs text-navy-700/70">{book.description}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Problem / Gap / Solution */}
       <section className="container-page py-16 sm:py-24">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="section-heading">Postpartum care often forgets the mother</h2>
           <p className="mt-4 text-navy-700/80">
-            Postpartum care focuses heavily on the baby — rarely the mother. Many women don't recognise postpartum
+            Postpartum care focuses heavily on the baby, rarely the mother. Many women don't recognise postpartum
             depression or anxiety early. Many feel ashamed to ask for help. Many lose their sense of self, overwhelmed
             by expectations, without practical tools to recover emotionally and mentally.
           </p>
@@ -81,7 +136,7 @@ export default function Home() {
           <div className="card">
             <h3 className="font-display text-lg font-bold text-navy-700">The Problem</h3>
             <p className="mt-2 text-sm text-navy-700/70">
-              Mothers carry silent overwhelm, anxiety, and loss of identity — with few safe spaces to say so out loud.
+              Mothers carry silent overwhelm, anxiety, and loss of identity with few safe spaces to say so out loud.
             </p>
           </div>
           <div className="card">
@@ -95,7 +150,7 @@ export default function Home() {
             <h3 className="font-display text-lg font-bold text-navy-700">Our Solution</h3>
             <p className="mt-2 text-sm text-navy-700/70">
               A live, expert-led experience that educates, normalises help-seeking, restores identity, and equips
-              mothers with practical tools — plus year-round programs and community.
+              mothers with practical tools plus year-round programs and community.
             </p>
           </div>
         </div>
@@ -107,8 +162,8 @@ export default function Home() {
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="section-heading">Four Ways We Walk Alongside Mothers</h2>
             <p className="mt-4 text-navy-700/80">
-              Our work is built around four program pillars — each one addressing a different part of the postpartum
-              journey.
+              Our work is built around four program pillars: Identity, Purpose, Healing, and Community, each
+              addressing a different part of the prepartum and postpartum journey.
             </p>
           </div>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -124,7 +179,7 @@ export default function Home() {
                     <h3 className="font-display text-xl font-bold text-navy-700">{p.name}</h3>
                     <p className="mt-2 text-sm text-navy-700/70">{p.mission}</p>
                   </div>
-                  <span className="mt-4 text-sm font-semibold text-sky-500">Learn more →</span>
+                  <span className="mt-4 text-sm font-semibold text-sky-500">Learn more</span>
                 </div>
               </Link>
             ))}
@@ -154,7 +209,7 @@ export default function Home() {
           <img
             src="/assets/images/what-participants-gain.png"
             alt="What participants gain from Purpose In Pain programs"
-            className="mx-auto max-h-[520px] w-auto rounded-2xl shadow-soft"
+            className="mx-auto aspect-square w-full max-w-lg rounded-2xl object-cover shadow-soft"
           />
         </div>
       </section>
@@ -165,30 +220,30 @@ export default function Home() {
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="section-heading">What We Stand For</h2>
             <p className="mt-4 text-navy-700/80">
-              Purpose, community, and empowerment — the values behind everything we build.
+              Purpose, community, and empowerment: the values behind everything we build.
             </p>
           </div>
           <div className="mt-12 grid gap-6 sm:grid-cols-3">
             <img
               src="/assets/images/value-community.jpg"
-              alt="Community — Purpose In Pain Initiative"
-              className="w-full rounded-2xl shadow-soft"
+              alt="Community: Purpose In Pain Initiative"
+              className="aspect-square w-full rounded-2xl object-cover shadow-soft"
             />
             <img
               src="/assets/images/value-empowerment.jpg"
-              alt="Empowerment — Purpose In Pain Initiative"
-              className="w-full rounded-2xl shadow-soft"
+              alt="Empowerment: Purpose In Pain Initiative"
+              className="aspect-square w-full rounded-2xl object-cover shadow-soft"
             />
             <img
               src="/assets/images/value-identity-merch.jpg"
-              alt="Identity — Purpose In Pain Initiative branded hoodie"
-              className="w-full rounded-2xl shadow-soft"
+              alt="Identity: Purpose In Pain Initiative branded hoodie"
+              className="aspect-square w-full rounded-2xl object-cover shadow-soft"
             />
           </div>
         </div>
       </section>
 
-      {/* Are you stuck in pain? CTA banner */}
+      {/* Community CTA banner */}
       <section className="container-page py-16 sm:py-24">
         <a
           href={socialLinks.community}
@@ -210,8 +265,7 @@ export default function Home() {
           <div>
             <h2 className="font-display text-3xl font-bold sm:text-4xl">Be part of someone's healing story</h2>
             <p className="mt-3 text-white/80">
-              Whether through giving your time or your resources, you can help a mother breathe a little easier
-              today.
+              Whether through giving your time or your resources, you can help a mother breathe a little easier today.
             </p>
           </div>
           <div className="flex flex-wrap gap-4 sm:justify-end">
