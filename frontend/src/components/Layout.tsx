@@ -6,20 +6,30 @@ import { socialLinks } from '../lib/content';
 import { apiGet } from '../lib/api';
 
 function BrandsSlider() {
-  const copies = [1, 2, 3, 4];
   return (
-    <div className="bg-white py-8 border-t border-navy-100">
-      <p className="container-page mb-4 text-xs font-semibold uppercase tracking-wide text-navy-700/40">Our Partners &amp; Collaborators</p>
-      <div className="overflow-hidden">
-        <div className="flex animate-marquee gap-16 whitespace-nowrap">
-          {copies.map((_, i) => (
-            <img
-              key={i}
-              src="/assets/images/collaborators.png"
-              alt="Our partners and collaborators"
-              className="inline-block h-20 w-auto max-w-[320px] object-contain"
-            />
-          ))}
+    <div className="border-t border-navy-100 bg-white py-5">
+      <p className="container-page mb-3 text-xs font-semibold uppercase tracking-wide text-navy-700/40">
+        Our Partners &amp; Collaborators
+      </p>
+      <div
+        className="overflow-hidden"
+        style={{
+          maskImage: 'linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%)',
+        }}
+      >
+        <div className="flex animate-marquee items-center" style={{ width: 'max-content' }}>
+          <img
+            src="/assets/images/brand-logos-strip.png"
+            alt="Our partners and collaborators"
+            className="h-16 w-auto"
+          />
+          <img
+            src="/assets/images/brand-logos-strip.png"
+            alt=""
+            aria-hidden="true"
+            className="h-16 w-auto"
+          />
         </div>
       </div>
     </div>
@@ -111,9 +121,9 @@ export default function Layout() {
   }, []);
 
   return (
-    <div className={`flex min-h-screen flex-col ${nextEvent ? 'pb-16' : ''}`}>
+    <div className="flex min-h-screen flex-col">
       <NavBar />
-      <main className="flex-1">
+      <main className={`flex-1 ${nextEvent ? 'pb-20' : ''}`}>
         <Outlet />
       </main>
       <BrandsSlider />
