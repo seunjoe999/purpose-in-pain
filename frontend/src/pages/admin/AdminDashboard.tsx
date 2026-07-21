@@ -264,8 +264,7 @@ type EventForm = {
 };
 
 function toLocalDatetime(iso: string) {
-  const d = new Date(iso);
-  return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+  return iso.slice(0, 16);
 }
 
 function EventFormFields({ form, onChange, token }: { form: EventForm; onChange: (f: EventForm) => void; token: string }) {
@@ -378,9 +377,6 @@ function EventsSection({ token }: { token: string }) {
     setError('');
     try {
       const { gallery_images, ...eventData } = editForm;
-      if (eventData.event_date) {
-        eventData.event_date = new Date(eventData.event_date).toISOString();
-      }
       await apiPut(`/admin/events/${editId}`, eventData, token);
       const urls = gallery_images.split('\n').map((s) => s.trim()).filter(Boolean);
       const newGalleries = { ...galleries, [editId]: urls };
@@ -401,9 +397,6 @@ function EventsSection({ token }: { token: string }) {
     setError('');
     try {
       const { gallery_images, ...eventData } = createForm;
-      if (eventData.event_date) {
-        eventData.event_date = new Date(eventData.event_date).toISOString();
-      }
       const created = await apiPost('/admin/events', eventData, token) as EventRow;
       if (gallery_images.trim() && created?.id) {
         const urls = gallery_images.split('\n').map((s) => s.trim()).filter(Boolean);
