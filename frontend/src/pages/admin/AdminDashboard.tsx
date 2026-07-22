@@ -328,21 +328,32 @@ function EventFormFields({ form, onChange, token }: { form: EventForm; onChange:
         )}
       </div>
       <div className="sm:col-span-2">
-        <label>Gallery Images (one URL per line)</label>
-        <textarea
-          rows={5}
-          placeholder={"https://example.com/photo1.jpg\nhttps://example.com/photo2.jpg"}
-          value={form.gallery_images}
-          onChange={(e) => onChange({ ...form, gallery_images: e.target.value })}
+        <label>Event Gallery Photos</label>
+        {/* Thumbnail grid of current photos */}
+        {form.gallery_images && (
+          <div className="mb-2 flex flex-wrap gap-2">
+            {form.gallery_images.split('\n').map((s) => s.trim()).filter(Boolean).map((url, i) => (
+              <div key={i} className="relative group">
+                <img src={url} alt="" className="h-20 w-20 rounded-lg object-cover border border-navy-100" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const urls = form.gallery_images.split('\n').map((s) => s.trim()).filter(Boolean);
+                    urls.splice(i, 1);
+                    onChange({ ...form, gallery_images: urls.join('\n') });
+                  }}
+                  className="absolute -top-1 -right-1 hidden group-hover:flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-xs font-bold shadow"
+                >×</button>
+              </div>
+            ))}
+          </div>
+        )}
+        <UploadBtn
+          token={token}
+          label="📸 Upload event photo"
+          onUrl={(url) => onChange({ ...form, gallery_images: form.gallery_images ? form.gallery_images + '\n' + url : url })}
         />
-        <div className="mt-1 flex items-center justify-between">
-          <p className="text-xs text-navy-700/50">Leave blank to use the default conference photo set.</p>
-          <UploadBtn
-            token={token}
-            label="📸 Upload photo"
-            onUrl={(url) => onChange({ ...form, gallery_images: form.gallery_images ? form.gallery_images + '\n' + url : url })}
-          />
-        </div>
+        <p className="mt-1 text-xs text-navy-700/50">Upload photos from this event. Hover a photo and click × to remove it.</p>
       </div>
     </div>
   );

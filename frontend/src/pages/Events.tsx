@@ -131,16 +131,7 @@ function GalleryModal({ images, title, startIndex = 0, onClose }: { images: stri
   );
 }
 
-const DEFAULT_GALLERY = [
-  'https://images.unsplash.com/photo-1573167101669-476636b96cea?w=800&h=800&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1503428593586-e225b39bddfe?w=800&h=800&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1573166364839-1bfe9196c23e?w=800&h=800&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1550305080-4e029753abcf?w=800&h=800&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1573497701240-345a300b8d36?w=800&h=800&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1555725305-e823b44548de?w=800&h=800&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1560523159-94c9d18bcf27?w=800&h=800&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1554200876-980213841c94?w=800&h=800&fit=crop&q=80',
-];
+const DEFAULT_GALLERY: string[] = [];
 
 export default function Events() {
   const [events, setEvents] = useState<Event[] | null>(null);
@@ -246,34 +237,38 @@ export default function Events() {
                           <span aria-hidden>📍</span> {ev.location}
                         </p>
                         <p className="mt-3 flex-1 text-sm text-navy-700/80">{ev.description}</p>
-                        <button
-                          onClick={() => setGalleryState({ event: ev, startIndex: 0 })}
-                          className="btn-secondary mt-4 w-fit"
-                        >
-                          View Gallery
-                        </button>
+                        {galleryImages.length > 0 && (
+                          <button
+                            onClick={() => setGalleryState({ event: ev, startIndex: 0 })}
+                            className="btn-secondary mt-4 w-fit"
+                          >
+                            View Gallery
+                          </button>
+                        )}
                       </div>
                     </div>
 
                     {/* Gallery thumbnail grid */}
-                    <div className="mt-4">
-                      <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-navy-700/50">Event Gallery</p>
-                      <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">
-                        {galleryImages.map((src, i) => (
-                          <button
-                            key={i}
-                            onClick={() => setGalleryState({ event: ev, startIndex: i })}
-                            className="group block overflow-hidden rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500"
-                          >
-                            <img
-                              src={src}
-                              alt={`${ev.title} gallery photo ${i + 1}`}
-                              className="aspect-square w-full object-cover transition group-hover:scale-105"
-                            />
-                          </button>
-                        ))}
+                    {galleryImages.length > 0 && (
+                      <div className="mt-4">
+                        <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-navy-700/50">Event Gallery</p>
+                        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">
+                          {galleryImages.map((src, i) => (
+                            <button
+                              key={i}
+                              onClick={() => setGalleryState({ event: ev, startIndex: i })}
+                              className="group block overflow-hidden rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500"
+                            >
+                              <img
+                                src={src}
+                                alt={`${ev.title} gallery photo ${i + 1}`}
+                                className="aspect-square w-full object-cover transition group-hover:scale-105"
+                              />
+                            </button>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 );
               })}
