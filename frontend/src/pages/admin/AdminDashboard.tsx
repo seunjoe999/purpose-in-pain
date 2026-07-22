@@ -1,5 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+const DEFAULT_GALLERY_URLS = [
+  'https://images.unsplash.com/photo-1573167101669-476636b96cea?w=800&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1503428593586-e225b39bddfe?w=800&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1573166364839-1bfe9196c23e?w=800&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1550305080-4e029753abcf?w=800&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1573497701240-345a300b8d36?w=800&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1555725305-e823b44548de?w=800&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1560523159-94c9d18bcf27?w=800&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1554200876-980213841c94?w=800&h=800&fit=crop&q=80',
+];
 import Logo from '../../components/Logo';
 import { apiGet, apiGetAuthed, apiPost, apiPut, apiDelete, apiUploadFile } from '../../lib/api';
 import { getAdminToken, clearAdminToken } from '../../lib/adminAuth';
@@ -387,7 +398,7 @@ function EventsSection({ token }: { token: string }) {
       location: ev.location ?? '',
       event_date: ev.event_date ? toLocalDatetime(ev.event_date) : '',
       image: ev.image ?? '',
-      gallery_images: (galleries[ev.id] ?? []).join('\n'),
+      gallery_images: (galleries[ev.id]?.length ? galleries[ev.id] : DEFAULT_GALLERY_URLS).join('\n'),
     });
   }
 

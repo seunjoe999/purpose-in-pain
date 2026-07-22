@@ -131,7 +131,16 @@ function GalleryModal({ images, title, startIndex = 0, onClose }: { images: stri
   );
 }
 
-const DEFAULT_GALLERY: string[] = [];
+const DEFAULT_GALLERY = [
+  'https://images.unsplash.com/photo-1573167101669-476636b96cea?w=800&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1503428593586-e225b39bddfe?w=800&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1573166364839-1bfe9196c23e?w=800&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1550305080-4e029753abcf?w=800&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1573497701240-345a300b8d36?w=800&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1555725305-e823b44548de?w=800&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1560523159-94c9d18bcf27?w=800&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1554200876-980213841c94?w=800&h=800&fit=crop&q=80',
+];
 
 export default function Events() {
   const [events, setEvents] = useState<Event[] | null>(null);
