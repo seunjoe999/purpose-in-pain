@@ -186,14 +186,7 @@ export default function AdminDashboard() {
             { key: 'created_at', label: 'Date', render: (r) => new Date(r.created_at).toLocaleString() },
           ]} />}
           {section === 'newsletter' && <NewsletterSection token={token} />}
-          {section === 'donations' && <InboxTable endpoint="/admin/donations" token={token} columns={[
-            { key: 'donor_name', label: 'Donor' },
-            { key: 'email', label: 'Email' },
-            { key: 'amount_pence', label: 'Amount', render: (r) => { const s: Record<string,string> = { GBP: '£', NGN: '₦', USD: '$' }; return `${s[r.currency] || r.currency || '£'}${(r.amount_pence / 100).toFixed(2)}`; } },
-            { key: 'frequency', label: 'Frequency' },
-            { key: 'status', label: 'Status' },
-            { key: 'created_at', label: 'Date', render: (r) => new Date(r.created_at).toLocaleString() },
-          ]} />}
+          {section === 'donations' && <DonationsSection token={token} />}
         </main>
       </div>
     </div>
@@ -1488,6 +1481,112 @@ function NewsletterSection({ token }: { token: string }) {
           { key: 'created_at', label: 'Subscribed', render: (r) => new Date(r.created_at).toLocaleString() },
         ]} />
       </div>
+    </div>
+  );
+}
+
+// ── Donations section ─────────────────────────────────────────────────────────
+
+function DonationsSection({ token }: { token: string }) {
+  const [rows, setRows] = useState<any[] | null>(null);
+  const [clearing, setClearing] = useState(false);
+
+  const SYMBOL: Record<string, string> = { GBP: '£', NGN: '₦', USD: '$' };
+
+  function load() {
+    apiGetAuthed('/admin/donations', token).then(setRows).catch(() => setRows([]));
+  }
+
+  useEffect(() => { load(); }, []);
+
+  async function deleteOne(id: string) {
+    if (!confirm('Delete this donation record?')) return;
+    await apiDelete(`/admin/donations/${id}`, token);
+    setRows((prev) => prev?.filter((r) => r.id !== id) ?? null);
+  }
+
+  async function clearPending() {
+    if (!confirm('Delete all pending donations older than 24 hours?')) return;
+    setClearing(true);
+    try {
+      const res: any = await apiDelete('/admin/donations-clear-pending?hours=24', token);
+      alert(`Cleared ${res.deleted ?? 0} pending donation(s).`);
+      load();
+    } finally {
+      setClearing(false);
+    }
+  }
+
+  const statusBadge = (s: string) => {
+    const map: Record<string, string> = {
+      success: 'bg-green-100 text-green-700',
+      pending: 'bg-amber-100 text-amber-700',
+      failed: 'bg-red-100 text-red-600',
+      expired: 'bg-slate-100 text-slate-500',
+    };
+    return (
+      <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-semibold ${map[s] || 'bg-slate-100 text-slate-500'}`}>
+        {s}
+      </span>
+    );
+  };
+
+  if (!rows) return <p className="text-navy-700/60">Loading…</p>;
+
+  const pending = rows.filter((r) => r.status === 'pending');
+
+  return (
+    <div className="space-y-4">
+      {pending.length > 0 && (
+        <div className="flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+          <p className="text-sm text-amber-700">
+            <strong>{pending.length}</strong> pending donation{pending.length !== 1 ? 's' : ''} — payments that were started but not completed.
+          </p>
+          <button
+            onClick={clearPending}
+            disabled={clearing}
+            className="ml-4 shrink-0 rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-amber-600 disabled:opacity-50"
+          >
+            {clearing ? 'Clearing…' : 'Clear pending (24h+)'}
+          </button>
+        </div>
+      )}
+
+      {rows.length === 0 ? (
+        <p className="text-navy-700/60">No donation records yet.</p>
+      ) : (
+        <div className="overflow-x-auto rounded-2xl border border-navy-50 bg-white shadow-soft">
+          <table className="w-full min-w-[640px] text-left text-sm">
+            <thead className="bg-navy-50/60 text-navy-700">
+              <tr>
+                {['Donor', 'Email', 'Amount', 'Frequency', 'Status', 'Date', ''].map((h) => (
+                  <th key={h} className="px-4 py-3 font-display font-semibold">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => (
+                <tr key={r.id} className="border-t border-navy-50">
+                  <td className="px-4 py-3 text-navy-700/80">{r.donor_name || '—'}</td>
+                  <td className="px-4 py-3 text-navy-700/80">{r.email}</td>
+                  <td className="px-4 py-3 text-navy-700/80">{(SYMBOL[r.currency] || r.currency || '£')}{(r.amount_pence / 100).toFixed(2)}</td>
+                  <td className="px-4 py-3 text-navy-700/80">{r.frequency}</td>
+                  <td className="px-4 py-3">{statusBadge(r.status)}</td>
+                  <td className="px-4 py-3 text-navy-700/80">{new Date(r.created_at).toLocaleString()}</td>
+                  <td className="px-4 py-3">
+                    <button
+                      onClick={() => deleteOne(r.id)}
+                      className="rounded-lg border border-red-200 px-2 py-1 text-xs font-semibold text-red-500 transition hover:bg-red-50"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
