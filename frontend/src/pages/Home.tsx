@@ -1,18 +1,67 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { programs, socialLinks, recommendedBooks, instagramReels } from '../lib/content';
+import { programs, socialLinks, instagramReels } from '../lib/content';
+import { apiGet } from '../lib/api';
 
-const gains = [
-  'Understanding postpartum mental health',
-  'Ability to recognize early warning signs',
-  'Confidence to seek help without shame',
-  'Tools for emotional healing',
-  'Practical self-care strategies',
-  'Identity restoration',
-  'Journaling techniques',
-  'Community & reassurance',
+type ShopProduct = { slug: string; name: string; author: string; description: string; image: string; price: string; category: string; link: string };
+
+const DEFAULT_BOOKS: ShopProduct[] = [
+  { slug: 'finding-purpose', name: 'Finding Purpose (eBook)', author: 'Dr Shalom Oluwabusayo Mojere', description: 'A 7-day step-by-step guide to discovering purpose in pain.', image: '/assets/images/finding-purpose-ebook.jpg', price: '£9.99', category: 'book', link: 'https://linktr.ee/purposeinpain1' },
 ];
 
+const DEFAULTS = {
+  hero_badge: 'Mental Health, Identity & Wellness: Prepartum Through Postpartum',
+  hero_title: 'Turn Your Pain Into Purpose',
+  hero_subtitle:
+    "Purpose In Pain Initiative CIC walks alongside mothers across the UK, Nigeria and the US, from prepartum preparation through postpartum recovery, helping them recognise what they're feeling, restore their identity, and find practical tools for healing, without shame.",
+  pgs_heading: 'Postpartum care often forgets the mother',
+  pgs_intro:
+    "Postpartum care focuses heavily on the baby, rarely the mother. Many women don't recognise postpartum depression or anxiety early. Many feel ashamed to ask for help. Many lose their sense of self, overwhelmed by expectations, without practical tools to recover emotionally and mentally.",
+  pgs_problem_title: 'The Problem',
+  pgs_problem_text: 'Mothers carry silent overwhelm, anxiety, and loss of identity with few safe spaces to say so out loud.',
+  pgs_gap_title: 'The Gap',
+  pgs_gap_text: 'A lack of safe, accessible, culturally sensitive postpartum education, identity-restoration conversations, and practical everyday self-care tools.',
+  pgs_solution_title: 'Our Solution',
+  pgs_solution_text: 'A live, expert-led experience that educates, normalises help-seeking, restores identity, and equips mothers with practical tools plus year-round programs and community.',
+  gains_heading: 'What Mothers Gain',
+  gains_subtitle: 'Every program is designed around one goal: helping mothers leave with something they can actually use.',
+  gains_list: [
+    'Understanding postpartum mental health',
+    'Ability to recognize early warning signs',
+    'Confidence to seek help without shame',
+    'Tools for emotional healing',
+    'Practical self-care strategies',
+    'Identity restoration',
+    'Journaling techniques',
+    'Community & reassurance',
+  ] as string[],
+  pillars_heading: 'Four Ways We Walk Alongside Mothers',
+  pillars_subtitle:
+    'Our work is built around four program pillars: Identity, Purpose, Healing, and Community, each addressing a different part of the prepartum and postpartum journey.',
+  values_heading: 'What We Stand For',
+  values_subtitle: 'Purpose, community, and empowerment: the values behind everything we build.',
+  cta_heading: "Be part of someone's healing story",
+  cta_subtitle: 'Whether through giving your time or your resources, you can help a mother breathe a little easier today.',
+};
+
 export default function Home() {
+  const [h, setH] = useState({ ...DEFAULTS });
+  const [books, setBooks] = useState<ShopProduct[]>(DEFAULT_BOOKS);
+
+  useEffect(() => {
+    apiGet('/settings')
+      .then((d: any) => {
+        if (d.home) setH({ ...DEFAULTS, ...d.home });
+        if (Array.isArray(d.shop?.products)) {
+          const shopBooks = d.shop.products.filter((p: ShopProduct) => p.category === 'book');
+          if (shopBooks.length > 0) setBooks(shopBooks);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const gainsList = Array.isArray(h.gains_list) ? h.gains_list : DEFAULTS.gains_list;
+
   return (
     <div>
       {/* Hero */}
@@ -22,20 +71,16 @@ export default function Home() {
         <div className="container-page relative grid gap-10 py-20 sm:py-28 lg:grid-cols-2 lg:items-center">
           <div>
             <span className="inline-block rounded-full bg-sky-500/15 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-sky-300">
-              Mental Health, Identity & Wellness: Prepartum Through Postpartum
+              {h.hero_badge}
             </span>
             <h1 className="mt-5 font-display text-4xl font-extrabold leading-tight sm:text-5xl">
-              Turn Your Pain Into Purpose
+              {h.hero_title}
             </h1>
             <p className="mt-5 max-w-xl text-lg text-white/80">
-              Purpose In Pain Initiative CIC walks alongside mothers across the UK, Nigeria and the US, from prepartum
-              preparation through postpartum recovery, helping them recognise what they're feeling, restore their
-              identity, and find practical tools for healing, without shame.
+              {h.hero_subtitle}
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <Link to="/donate" className="btn-primary">
-                Donate Today
-              </Link>
+              <Link to="/donate" className="btn-primary">Donate Today</Link>
               <Link to="/volunteer" className="btn-secondary border-white text-white hover:bg-white hover:text-navy-700">
                 Volunteer With Us
               </Link>
@@ -99,59 +144,49 @@ export default function Home() {
       </section>
 
       {/* Recommended Books */}
-      <section className="bg-sky-50/60 py-10 sm:py-14">
-        <div className="container-page">
-          <p className="text-sm font-semibold uppercase tracking-wide text-sky-500">Recommended Reading</p>
-          <div className="mt-4 flex flex-wrap gap-6">
-            {recommendedBooks.map((book) => (
-              <Link
-                key={book.slug}
-                to="/shop"
-                className="flex items-center gap-4 rounded-2xl border border-navy-100 bg-white p-3 pr-5 shadow-soft transition hover:-translate-y-0.5 hover:shadow-md"
-              >
-                <img src={book.cover} alt={book.title} className="h-20 w-auto rounded-md shadow-soft" />
-                <div>
-                  <p className="font-display text-sm font-bold text-navy-700">{book.title}</p>
-                  <p className="text-xs text-navy-700/60">{book.author}</p>
-                  <p className="mt-1 text-xs text-navy-700/70">{book.description}</p>
-                </div>
-              </Link>
-            ))}
+      {books.length > 0 && (
+        <section className="bg-sky-50/60 py-10 sm:py-14">
+          <div className="container-page">
+            <p className="text-sm font-semibold uppercase tracking-wide text-sky-500">Recommended Reading</p>
+            <div className="mt-4 flex flex-wrap gap-6">
+              {books.map((book) => (
+                <Link
+                  key={book.slug}
+                  to="/shop"
+                  className="flex items-center gap-4 rounded-2xl border border-navy-100 bg-white p-3 pr-5 shadow-soft transition hover:-translate-y-0.5 hover:shadow-md"
+                >
+                  <img src={book.image} alt={book.name} className="h-20 w-auto rounded-md shadow-soft" />
+                  <div>
+                    <p className="font-display text-sm font-bold text-navy-700">{book.name}</p>
+                    {book.author && <p className="text-xs text-navy-700/60">{book.author}</p>}
+                    <p className="mt-1 text-xs text-navy-700/70">{book.description}</p>
+                    {book.price && <p className="mt-1 font-display text-sm font-bold text-sky-500">{book.price}</p>}
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Problem / Gap / Solution */}
       <section className="container-page py-16 sm:py-24">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="section-heading">Postpartum care often forgets the mother</h2>
-          <p className="mt-4 text-navy-700/80">
-            Postpartum care focuses heavily on the baby, rarely the mother. Many women don't recognise postpartum
-            depression or anxiety early. Many feel ashamed to ask for help. Many lose their sense of self, overwhelmed
-            by expectations, without practical tools to recover emotionally and mentally.
-          </p>
+          <h2 className="section-heading">{h.pgs_heading}</h2>
+          <p className="mt-4 text-navy-700/80">{h.pgs_intro}</p>
         </div>
-
         <div className="mt-12 grid gap-6 sm:grid-cols-3">
           <div className="card">
-            <h3 className="font-display text-lg font-bold text-navy-700">The Problem</h3>
-            <p className="mt-2 text-sm text-navy-700/70">
-              Mothers carry silent overwhelm, anxiety, and loss of identity with few safe spaces to say so out loud.
-            </p>
+            <h3 className="font-display text-lg font-bold text-navy-700">{h.pgs_problem_title}</h3>
+            <p className="mt-2 text-sm text-navy-700/70">{h.pgs_problem_text}</p>
           </div>
           <div className="card">
-            <h3 className="font-display text-lg font-bold text-navy-700">The Gap</h3>
-            <p className="mt-2 text-sm text-navy-700/70">
-              A lack of safe, accessible, culturally sensitive postpartum education, identity-restoration
-              conversations, and practical everyday self-care tools.
-            </p>
+            <h3 className="font-display text-lg font-bold text-navy-700">{h.pgs_gap_title}</h3>
+            <p className="mt-2 text-sm text-navy-700/70">{h.pgs_gap_text}</p>
           </div>
           <div className="card">
-            <h3 className="font-display text-lg font-bold text-navy-700">Our Solution</h3>
-            <p className="mt-2 text-sm text-navy-700/70">
-              A live, expert-led experience that educates, normalises help-seeking, restores identity, and equips
-              mothers with practical tools plus year-round programs and community.
-            </p>
+            <h3 className="font-display text-lg font-bold text-navy-700">{h.pgs_solution_title}</h3>
+            <p className="mt-2 text-sm text-navy-700/70">{h.pgs_solution_text}</p>
           </div>
         </div>
       </section>
@@ -160,11 +195,8 @@ export default function Home() {
       <section className="bg-sky-50/60 py-16 sm:py-24">
         <div className="container-page">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="section-heading">Four Ways We Walk Alongside Mothers</h2>
-            <p className="mt-4 text-navy-700/80">
-              Our work is built around four program pillars: Identity, Purpose, Healing, and Community, each
-              addressing a different part of the prepartum and postpartum journey.
-            </p>
+            <h2 className="section-heading">{h.pillars_heading}</h2>
+            <p className="mt-4 text-navy-700/80">{h.pillars_subtitle}</p>
           </div>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {programs.map((p) => (
@@ -191,13 +223,11 @@ export default function Home() {
       <section className="container-page py-16 sm:py-24">
         <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
           <div>
-            <h2 className="section-heading">What Mothers Gain</h2>
-            <p className="mt-4 text-navy-700/80">
-              Every program is designed around one goal: helping mothers leave with something they can actually use.
-            </p>
+            <h2 className="section-heading">{h.gains_heading}</h2>
+            <p className="mt-4 text-navy-700/80">{h.gains_subtitle}</p>
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              {gains.map((g) => (
-                <div key={g} className="card flex items-start gap-3">
+              {gainsList.map((g, i) => (
+                <div key={i} className="card flex items-start gap-3">
                   <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sky-100 text-sky-600">
                     ✓
                   </span>
@@ -218,10 +248,8 @@ export default function Home() {
       <section className="bg-sky-50/60 py-16 sm:py-24">
         <div className="container-page">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="section-heading">What We Stand For</h2>
-            <p className="mt-4 text-navy-700/80">
-              Purpose, community, and empowerment: the values behind everything we build.
-            </p>
+            <h2 className="section-heading">{h.values_heading}</h2>
+            <p className="mt-4 text-navy-700/80">{h.values_subtitle}</p>
           </div>
           <div className="mt-12 grid gap-6 sm:grid-cols-3">
             <img
@@ -263,15 +291,11 @@ export default function Home() {
       <section className="bg-navy-700 py-16 text-white sm:py-20">
         <div className="container-page grid gap-8 sm:grid-cols-2 sm:items-center">
           <div>
-            <h2 className="font-display text-3xl font-bold sm:text-4xl">Be part of someone's healing story</h2>
-            <p className="mt-3 text-white/80">
-              Whether through giving your time or your resources, you can help a mother breathe a little easier today.
-            </p>
+            <h2 className="font-display text-3xl font-bold sm:text-4xl">{h.cta_heading}</h2>
+            <p className="mt-3 text-white/80">{h.cta_subtitle}</p>
           </div>
           <div className="flex flex-wrap gap-4 sm:justify-end">
-            <Link to="/donate" className="btn-primary">
-              Donate
-            </Link>
+            <Link to="/donate" className="btn-primary">Donate</Link>
             <Link to="/volunteer" className="btn-secondary border-white text-white hover:bg-white hover:text-navy-700">
               Become a Volunteer
             </Link>

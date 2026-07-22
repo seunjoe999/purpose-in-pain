@@ -216,6 +216,15 @@ export type Brand = {
 };
 
 export const partnerBrands: Brand[] = [
-  { name: 'Our Partners and Collaborators', logo: '/assets/images/collaborators.png' },
-  { name: 'The Gap We Are Bridging', logo: '/assets/images/gap-we-are-bridging.png' },
+  { name: 'TRO',                       logo: '/assets/images/logos/partner-tro.png' },
+  { name: 'Babes of the Most-High',    logo: '/assets/images/logos/partner-babes-most-high.png' },
+  { name: 'Heritage Mart',             logo: '/assets/images/logos/partner-heritage-mart.png' },
+  { name: 'HiD',                       logo: '/assets/images/logos/partner-hid.png' },
+  { name: 'Royal Daughters',           logo: '/assets/images/logos/partner-royal-daughters.png' },
+  { name: "Trader's Cot",              logo: '/assets/images/logos/partner-traders-cot.png' },
+  { name: 'Aisaya',                    logo: '/assets/images/logos/partner-aisaya.png' },
+  { name: 'Agape Through Jesus',       logo: '/assets/images/logos/partner-agape-jesus.png' },
+  { name: 'TB Lighting Up Your Glory', logo: '/assets/images/logos/partner-tb-lighting.png' },
+  { name: 'Real Hope Initiative CIC',  logo: '/assets/images/logos/partner-real-hope.png' },
+  { name: 'Bloom & Thrive',            logo: '/assets/images/logos/partner-bloom-thrive.png' },
 ];

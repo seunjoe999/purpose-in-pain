@@ -1,59 +1,69 @@
 import { useState } from 'react';
 import { apiPost } from '../lib/api';
 
-const PRESETS_GBP = [5, 25, 100];
+type Currency = 'GBP' | 'NGN' | 'USD';
 
-const CURRENCIES = [
-  { code: 'GBP', symbol: '£', label: 'GBP (British Pound)', rate: 1 },
-  { code: 'USD', symbol: '$', label: 'USD (US Dollar)', rate: 1.27 },
-  { code: 'EUR', symbol: '€', label: 'EUR (Euro)', rate: 1.17 },
-  { code: 'NGN', symbol: '₦', label: 'NGN (Nigerian Naira)', rate: 2100 },
+const CURRENCIES: { code: Currency; flag: string; symbol: string; presets: number[] }[] = [
+  { code: 'GBP', flag: '🇬🇧', symbol: '£', presets: [5, 10, 20, 50] },
+  { code: 'NGN', flag: '🇳🇬', symbol: '₦', presets: [1000, 2500, 5000, 10000] },
+  { code: 'USD', flag: '🇺🇸', symbol: '$', presets: [5, 10, 25, 50] },
 ];
 
+function formatAmount(amount: number, currency: Currency) {
+  const cur = CURRENCIES.find((c) => c.code === currency)!;
+  if (currency === 'NGN') return `${cur.symbol}${amount.toLocaleString('en-NG')}`;
+  return `${cur.symbol}${amount}`;
+}
+
 export default function Donate() {
+  const [currency, setCurrency] = useState<Currency>('GBP');
+  const [preset, setPreset] = useState<number | null>(10);
+  const [custom, setCustom] = useState('');
   const [frequency, setFrequency] = useState<'one-time' | 'monthly'>('one-time');
-  const [amount, setAmount] = useState<number>(25);
-  const [customAmount, setCustomAmount] = useState('');
-  const [currency, setCurrency] = useState(CURRENCIES[0]);
   const [email, setEmail] = useState('');
-  const [donorName, setDonorName] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
+  const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const displayAmount = customAmount ? Number(customAmount) : amount;
-  const gbpAmount = displayAmount / currency.rate;
+  const cur = CURRENCIES.find((c) => c.code === currency)!;
+  const amount = custom ? parseFloat(custom) : preset;
+  const displayAmount = amount ? formatAmount(amount, currency) : `${cur.symbol}—`;
 
-  const presets = PRESETS_GBP.map((p) => Math.round(p * currency.rate));
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!displayAmount || displayAmount <= 0) {
-      setError('Please choose or enter a donation amount greater than zero.');
-      return;
-    }
+  function switchCurrency(code: Currency) {
+    setCurrency(code);
+    setPreset(CURRENCIES.find((c) => c.code === code)!.presets[1]);
+    setCustom('');
     setError('');
-    setStatus('loading');
-    try {
-      const callbackUrl = `${window.location.origin}/donate/success`;
-      const res = await apiPost('/donations/initialize', {
-        email,
-        donorName,
-        amountPounds: Math.max(1, Math.round(gbpAmount * 100) / 100),
-        frequency,
-        callbackUrl,
-      });
-      window.location.href = res.authorizationUrl;
-    } catch (err: any) {
-      setError(err.message || 'Could not start your donation. Please try again.');
-      setStatus('error');
-    }
   }
 
-  function handleCurrencyChange(code: string) {
-    const c = CURRENCIES.find((c) => c.code === code)!;
-    setCurrency(c);
-    setAmount(Math.round(PRESETS_GBP[1] * c.rate));
-    setCustomAmount('');
+  async function handleDonate(e: React.FormEvent) {
+    e.preventDefault();
+    if (!amount || amount <= 0) { setError('Please choose or enter an amount.'); return; }
+    if (!email) { setError('Please enter your email address.'); return; }
+    setLoading(true);
+    setError('');
+    try {
+      const callbackUrl = `${window.location.origin}/donate/success`;
+      const cancelUrl = `${window.location.origin}/donate`;
+      const result = await apiPost('/donations/initialize', {
+        email,
+        donorName: name || undefined,
+        amount,
+        currency,
+        frequency,
+        callbackUrl,
+        cancelUrl,
+      }) as any;
+      if (result?.checkoutUrl) {
+        window.location.href = result.checkoutUrl;
+      } else {
+        setError('Could not start payment. Please try again.');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -69,104 +79,123 @@ export default function Donate() {
       </section>
 
       <section className="container-page py-16 sm:py-20">
-        <div className="mx-auto max-w-xl">
-          <form onSubmit={handleSubmit} className="card space-y-6">
-            <div className="flex rounded-full bg-navy-50 p-1">
-              {(['one-time', 'monthly'] as const).map((f) => (
-                <button
-                  type="button"
-                  key={f}
-                  onClick={() => setFrequency(f)}
-                  className={`flex-1 rounded-full py-2 text-sm font-display font-semibold transition ${
-                    frequency === f ? 'bg-sky-500 text-white shadow-soft' : 'text-navy-700'
-                  }`}
-                >
-                  {f === 'one-time' ? 'Give Once' : 'Give Monthly'}
-                </button>
-              ))}
-            </div>
+        <div className="mx-auto max-w-lg">
+          <form onSubmit={handleDonate} className="card space-y-6">
 
+            {/* Currency */}
             <div>
-              <label htmlFor="currency">Currency</label>
-              <select
-                id="currency"
-                value={currency.code}
-                onChange={(e) => handleCurrencyChange(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-navy-100 bg-white px-4 py-3 text-sm text-navy-700 focus:border-sky-400 focus:outline-none"
-              >
+              <p className="mb-2 text-sm font-semibold text-navy-700">Select your currency</p>
+              <div className="flex gap-2">
                 {CURRENCIES.map((c) => (
-                  <option key={c.code} value={c.code}>{c.label}</option>
+                  <button
+                    key={c.code}
+                    type="button"
+                    onClick={() => switchCurrency(c.code)}
+                    className={`flex flex-1 flex-col items-center gap-0.5 rounded-xl border-2 py-2.5 text-sm font-semibold transition ${
+                      currency === c.code
+                        ? 'border-sky-500 bg-sky-50 text-sky-600'
+                        : 'border-navy-100 text-navy-700/60 hover:border-navy-300'
+                    }`}
+                  >
+                    <span className="text-lg">{c.flag}</span>
+                    <span>{c.symbol} {c.code}</span>
+                  </button>
                 ))}
-              </select>
+              </div>
             </div>
 
+            {/* Preset amounts */}
             <div>
-              <label>Amount ({currency.code})</label>
-              <div className="grid grid-cols-3 gap-3">
-                {presets.map((p) => (
+              <p className="mb-2 text-sm font-semibold text-navy-700">Choose an amount</p>
+              <div className="grid grid-cols-4 gap-2">
+                {cur.presets.map((p) => (
                   <button
-                    type="button"
                     key={p}
-                    onClick={() => {
-                      setAmount(p);
-                      setCustomAmount('');
-                    }}
+                    type="button"
+                    onClick={() => { setPreset(p); setCustom(''); }}
                     className={`rounded-xl border-2 py-3 font-display font-bold transition ${
-                      !customAmount && amount === p
+                      preset === p && !custom
                         ? 'border-sky-500 bg-sky-50 text-sky-600'
                         : 'border-navy-100 text-navy-700 hover:border-sky-300'
                     }`}
                   >
-                    {currency.symbol}{p.toLocaleString()}
+                    {formatAmount(p, currency)}
                   </button>
                 ))}
               </div>
-              <div className="mt-3">
-                <label htmlFor="custom">Or enter a custom amount</label>
+              <div className="mt-2 flex items-center gap-2">
+                <span className="shrink-0 font-display text-lg font-bold text-navy-700">{cur.symbol}</span>
                 <input
-                  id="custom"
                   type="number"
-                  min={1}
-                  placeholder={`e.g. ${currency.symbol}${Math.round(40 * currency.rate)}`}
-                  value={customAmount}
-                  onChange={(e) => setCustomAmount(e.target.value)}
+                  placeholder="Other amount"
+                  min="1"
+                  step="any"
+                  value={custom}
+                  onChange={(e) => { setCustom(e.target.value); setPreset(null); }}
+                  className="flex-1"
                 />
               </div>
-              {currency.code !== 'GBP' && displayAmount > 0 && (
-                <p className="mt-1 text-xs text-navy-700/50">
-                  Approx. £{gbpAmount.toFixed(2)} GBP (payments processed in GBP)
+            </div>
+
+            {/* Frequency */}
+            <div>
+              <p className="mb-2 text-sm font-semibold text-navy-700">Frequency</p>
+              <div className="flex gap-2">
+                {(['one-time', 'monthly'] as const).map((f) => (
+                  <button
+                    key={f}
+                    type="button"
+                    onClick={() => setFrequency(f)}
+                    className={`flex-1 rounded-xl border-2 py-2.5 text-sm font-semibold transition ${
+                      frequency === f
+                        ? 'border-sky-500 bg-sky-50 text-sky-600'
+                        : 'border-navy-100 text-navy-700/60 hover:border-navy-300'
+                    }`}
+                  >
+                    {f === 'one-time' ? 'One-time gift' : 'Give monthly'}
+                  </button>
+                ))}
+              </div>
+              {frequency === 'monthly' && (
+                <p className="mt-1.5 text-xs text-navy-700/50">
+                  You will be charged {displayAmount} every month. Cancel anytime.
                 </p>
               )}
             </div>
 
-            <div>
-              <label htmlFor="donorName">
-                Your name <span className="text-xs text-navy-700/40">(optional)</span>
-              </label>
-              <input id="donorName" value={donorName} onChange={(e) => setDonorName(e.target.value)} />
+            {/* Details */}
+            <div className="space-y-3">
+              <div>
+                <label>Your name (optional)</label>
+                <input placeholder="Dr Shalom Mojere" value={name} onChange={(e) => setName(e.target.value)} />
+              </div>
+              <div>
+                <label>Email address *</label>
+                <input type="email" required placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+              </div>
             </div>
 
-            <div>
-              <label htmlFor="email">Email <span className="text-xs text-red-400">*</span></label>
-              <input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+            {/* Impact */}
+            <div className="rounded-2xl bg-sky-50 px-5 py-4 text-sm text-navy-700/80">
+              <ul className="space-y-1.5">
+                <li className="flex items-start gap-2"><span className="mt-0.5 text-sky-500">✓</span> Fund a mentoring session for a mother in crisis</li>
+                <li className="flex items-start gap-2"><span className="mt-0.5 text-sky-500">✓</span> Support a care package for a family in need</li>
+                <li className="flex items-start gap-2"><span className="mt-0.5 text-sky-500">✓</span> Help run a live community event</li>
+              </ul>
             </div>
 
-            {error && <p className="text-sm text-red-500">{error}</p>}
+            {error && (
+              <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">{error}</p>
+            )}
 
-            <button type="submit" disabled={status === 'loading'} className="btn-primary w-full">
-              {status === 'loading'
-                ? 'Redirecting to secure checkout…'
-                : `Give ${currency.symbol}${(displayAmount || 0).toLocaleString()}${frequency === 'monthly' ? ' / month' : ''}`}
+            <button type="submit" disabled={loading || !amount} className="btn-primary w-full text-base">
+              {loading
+                ? 'Preparing your payment…'
+                : `Donate ${amount ? displayAmount : ''} ${frequency === 'monthly' ? 'monthly' : 'now'}`}
             </button>
 
-            <p className="text-center text-xs text-navy-700/50">
-              Payments are processed securely via Paystack. You will be redirected to complete your donation.
+            <p className="text-center text-xs text-navy-700/40">
+              Payments processed securely via Stripe. You will be redirected to complete your gift.
             </p>
           </form>
         </div>

@@ -2,13 +2,36 @@ import { Outlet, useLocation, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import NavBar from './NavBar';
 import Footer from './Footer';
-import { socialLinks, PAST_EVENT_IDS } from '../lib/content';
+import { socialLinks, PAST_EVENT_IDS, partnerBrands as defaultBrands } from '../lib/content';
 import { apiGet } from '../lib/api';
 
 function BrandsSlider() {
+  const [brands, setBrands] = useState<{ name: string; logo: string }[]>(defaultBrands);
+
+  useEffect(() => {
+    apiGet('/settings')
+      .then((d: any) => { if (Array.isArray(d.brands) && d.brands.length > 0) setBrands(d.brands); })
+      .catch(() => {});
+  }, []);
+
+  const visibleBrands = brands.filter((b) => b.logo);
+
+  const logoRow = (
+    <div className="flex items-center gap-12 px-8">
+      {visibleBrands.map((b, i) => (
+        <img
+          key={i}
+          src={b.logo}
+          alt={b.name}
+          className="h-12 w-auto max-w-[120px] object-contain transition hover:scale-105"
+        />
+      ))}
+    </div>
+  );
+
   return (
     <div className="border-t border-navy-100 bg-white py-5">
-      <p className="container-page mb-3 text-xs font-semibold uppercase tracking-wide text-navy-700/40">
+      <p className="container-page mb-3 text-center text-xs font-bold uppercase tracking-wide text-navy-700">
         Our Partners &amp; Collaborators
       </p>
       <div
@@ -19,17 +42,8 @@ function BrandsSlider() {
         }}
       >
         <div className="flex animate-marquee items-center" style={{ width: 'max-content' }}>
-          <img
-            src="/assets/images/brand-logos-strip.png"
-            alt="Our partners and collaborators"
-            className="h-16 w-auto"
-          />
-          <img
-            src="/assets/images/brand-logos-strip.png"
-            alt=""
-            aria-hidden="true"
-            className="h-16 w-auto"
-          />
+          {logoRow}
+          <span aria-hidden="true" className="flex items-center">{logoRow}</span>
         </div>
       </div>
     </div>

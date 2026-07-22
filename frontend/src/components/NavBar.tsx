@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import Logo from './Logo';
+import { apiGet } from '../lib/api';
 
-const links = [
+const DEFAULT_LINKS = [
   { to: '/', label: 'Home' },
   { to: '/about', label: 'About' },
   { to: '/programs', label: 'Programs' },
@@ -13,8 +14,22 @@ const links = [
   { to: '/contact', label: 'Contact' },
 ];
 
+const DONATE_DEFAULT_LABEL = 'Donate';
+
 export default function NavBar() {
   const [open, setOpen] = useState(false);
+  const [customLabels, setCustomLabels] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    apiGet('/settings')
+      .then((d: any) => { if (d.nav_labels) setCustomLabels(d.nav_labels); })
+      .catch(() => {});
+  }, []);
+
+  const links = DEFAULT_LINKS.map((l) => ({
+    to: l.to,
+    label: customLabels[l.to] || l.label,
+  }));
 
   return (
     <header className="sticky top-0 z-50 border-b border-navy-50 bg-white/95 backdrop-blur">
@@ -42,7 +57,7 @@ export default function NavBar() {
 
         <div className="hidden items-center gap-3 lg:flex">
           <Link to="/donate" className="btn-primary">
-            Donate
+            {customLabels['/donate'] || DONATE_DEFAULT_LABEL}
           </Link>
         </div>
 
@@ -74,7 +89,7 @@ export default function NavBar() {
               </NavLink>
             ))}
             <Link to="/donate" onClick={() => setOpen(false)} className="btn-primary mt-2 w-full">
-              Donate
+              {customLabels['/donate'] || DONATE_DEFAULT_LABEL}
             </Link>
           </div>
         </div>

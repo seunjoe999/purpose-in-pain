@@ -53,6 +53,17 @@ export async function apiDelete(path: string, token?: string) {
   }
 }
 
+export async function apiUploadFile(path: string, file: File, token: string) {
+  const form = new FormData();
+  form.append('file', file);
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: form,
+  });
+  return handle(res);
+}
+
 export async function apiGetAuthed(path: string, token: string) {
   const res = await fetch(`${API_BASE}${path}`, {
     headers: { Authorization: `Bearer ${token}` },

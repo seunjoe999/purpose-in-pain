@@ -5,18 +5,15 @@ import { donationThankYouNote } from '../lib/content';
 
 export default function DonateSuccess() {
   const [params] = useSearchParams();
-  const reference = params.get('reference') || params.get('trxref');
+  const sessionId = params.get('session_id');
   const [status, setStatus] = useState<'checking' | 'success' | 'failed' | 'unknown'>('checking');
 
   useEffect(() => {
-    if (!reference) {
-      setStatus('unknown');
-      return;
-    }
-    apiGet(`/donations/verify/${reference}`)
-      .then((res) => setStatus(res.status === 'success' ? 'success' : 'failed'))
+    if (!sessionId) { setStatus('unknown'); return; }
+    apiGet(`/donations/verify/${sessionId}`)
+      .then((res: any) => setStatus(res.status === 'success' ? 'success' : 'failed'))
       .catch(() => setStatus('unknown'));
-  }, [reference]);
+  }, [sessionId]);
 
   return (
     <div className="container-page py-24">
@@ -27,7 +24,7 @@ export default function DonateSuccess() {
           <>
             <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-sky-100 text-2xl text-sky-600">♥</span>
             <h1 className="mt-6 font-display text-3xl font-bold text-navy-700">Thank You</h1>
-            <p className="mt-4 text-navy-700/85 leading-relaxed">{donationThankYouNote}</p>
+            <p className="mt-4 leading-relaxed text-navy-700/85">{donationThankYouNote}</p>
           </>
         )}
 
@@ -35,8 +32,7 @@ export default function DonateSuccess() {
           <>
             <h1 className="font-display text-2xl font-bold text-navy-700">We couldn't confirm this payment</h1>
             <p className="mt-3 text-navy-700/70">
-              If you believe this is an error, please contact us at purposeinpain1@gmail.com and we'll help sort it
-              out.
+              If you believe this is an error, please contact us at purposeinpain1@gmail.com and we'll help sort it out.
             </p>
           </>
         )}
@@ -45,15 +41,13 @@ export default function DonateSuccess() {
           <>
             <h1 className="font-display text-2xl font-bold text-navy-700">Donation status unavailable</h1>
             <p className="mt-3 text-navy-700/70">
-              We could not verify this transaction automatically. If you completed a payment, thank you. Please
+              We could not verify this transaction automatically. If you completed a payment, thank you — please
               contact us if you would like a confirmation.
             </p>
           </>
         )}
 
-        <Link to="/" className="btn-primary mt-8 inline-flex">
-          Back to Home
-        </Link>
+        <Link to="/" className="btn-primary mt-8 inline-flex">Back to Home</Link>
       </div>
     </div>
   );
