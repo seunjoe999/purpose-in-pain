@@ -263,7 +263,16 @@ type EventForm = {
   gallery_images: string; // newline-separated URLs
 };
 
-function toLocalDatetime(iso: string) {
+// Parse "YYYY-MM-DDTHH:mm" as local time and return UTC ISO string
+function localToUtcIso(local: string): string {
+  const [date, time] = local.split('T');
+  const [y, mo, d] = date.split('-').map(Number);
+  const [h, mi] = time.split(':').map(Number);
+  return new Date(y, mo - 1, d, h, mi).toISOString();
+}
+
+// Convert UTC ISO string to "YYYY-MM-DDTHH:mm" in local time
+function toLocalDatetime(iso: string): string {
   const d = new Date(iso);
   return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
 }
@@ -378,7 +387,7 @@ function EventsSection({ token }: { token: string }) {
     setError('');
     try {
       const { gallery_images, ...eventData } = editForm;
-      if (eventData.event_date) eventData.event_date = new Date(eventData.event_date).toISOString();
+      if (eventData.event_date) eventData.event_date = localToUtcIso(eventData.event_date);
       await apiPut(`/admin/events/${editId}`, eventData, token);
       const urls = gallery_images.split('\n').map((s) => s.trim()).filter(Boolean);
       const newGalleries = { ...galleries, [editId]: urls };
@@ -399,7 +408,7 @@ function EventsSection({ token }: { token: string }) {
     setError('');
     try {
       const { gallery_images, ...eventData } = createForm;
-      if (eventData.event_date) eventData.event_date = new Date(eventData.event_date).toISOString();
+      if (eventData.event_date) eventData.event_date = localToUtcIso(eventData.event_date);
       const created = await apiPost('/admin/events', eventData, token) as EventRow;
       if (gallery_images.trim() && created?.id) {
         const urls = gallery_images.split('\n').map((s) => s.trim()).filter(Boolean);
