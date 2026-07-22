@@ -238,8 +238,8 @@ function DashboardSection({ token }: { token: string }) {
       <div className="card">
         <h3 className="font-display text-base font-bold text-navy-700 mb-2">Welcome to the Admin Panel</h3>
         <p className="text-sm text-navy-700/70 max-w-2xl">
-          Use the sidebar to manage every part of the website. Under <strong>Events</strong> you can edit event details and change the date —
-          setting a date in the past will automatically move that event to the "Past Events" section. Under <strong>Blog Posts</strong> you can
+          Use the sidebar to manage every part of the website. Under <strong>Events</strong> you can edit event details and change the date.
+          Setting a date in the past will automatically move that event to the "Past Events" section. Under <strong>Blog Posts</strong> you can
           create, edit, and delete articles. Team, Programs, Brands, Social Links, and Contact Info are all editable too.
         </p>
       </div>
@@ -1400,7 +1400,7 @@ function NavEditor({ token }: { token: string }) {
         <h3 className="font-display text-lg font-bold text-navy-700 flex-1">Navigation Labels</h3>
         <SavedFlash show={saved} />
       </div>
-      <p className="text-xs text-navy-700/60">Change the text shown in the top navigation bar. Paths stay the same — only labels change.</p>
+      <p className="text-xs text-navy-700/60">Change the text shown in the top navigation bar. Only labels change, paths stay the same.</p>
       <div className="space-y-3">
         {DEFAULT_NAV_LINKS.map((link) => (
           <div key={link.to} className="flex items-center gap-3">
@@ -1540,7 +1540,7 @@ function DonationsSection({ token }: { token: string }) {
       {pending.length > 0 && (
         <div className="flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
           <p className="text-sm text-amber-700">
-            <strong>{pending.length}</strong> pending donation{pending.length !== 1 ? 's' : ''} — payments that were started but not completed.
+            <strong>{pending.length}</strong> pending donation{pending.length !== 1 ? 's' : ''}: payments started but not completed.
           </p>
           <button
             onClick={clearPending}
