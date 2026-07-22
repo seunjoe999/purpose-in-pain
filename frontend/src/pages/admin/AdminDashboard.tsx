@@ -219,10 +219,10 @@ function DashboardSection({ token }: { token: string }) {
   }, [token]);
 
   const cards = [
-    { label: 'Volunteers', value: stats?.volunteers ?? '—', color: 'bg-sky-50 border-sky-200 text-sky-600' },
-    { label: 'Messages', value: stats?.messages ?? '—', color: 'bg-purple-50 border-purple-200 text-purple-600' },
-    { label: 'Newsletter', value: stats?.subscribers ?? '—', color: 'bg-green-50 border-green-200 text-green-600' },
-    { label: 'Donations raised', value: stats ? `£${(stats.revenue / 100).toFixed(0)}` : '—', color: 'bg-amber-50 border-amber-200 text-amber-600' },
+    { label: 'Volunteers', value: stats?.volunteers ?? '...', color: 'bg-sky-50 border-sky-200 text-sky-600' },
+    { label: 'Messages', value: stats?.messages ?? '...', color: 'bg-purple-50 border-purple-200 text-purple-600' },
+    { label: 'Newsletter', value: stats?.subscribers ?? '...', color: 'bg-green-50 border-green-200 text-green-600' },
+    { label: 'Donations raised', value: stats ? `£${(stats.revenue / 100).toFixed(0)}` : '...', color: 'bg-amber-50 border-amber-200 text-amber-600' },
   ];
 
   return (
@@ -1567,7 +1567,7 @@ function DonationsSection({ token }: { token: string }) {
             <tbody>
               {rows.map((r) => (
                 <tr key={r.id} className="border-t border-navy-50">
-                  <td className="px-4 py-3 text-navy-700/80">{r.donor_name || '—'}</td>
+                  <td className="px-4 py-3 text-navy-700/80">{r.donor_name || 'Anonymous'}</td>
                   <td className="px-4 py-3 text-navy-700/80">{r.email}</td>
                   <td className="px-4 py-3 text-navy-700/80">{(SYMBOL[r.currency] || r.currency || '£')}{(r.amount_pence / 100).toFixed(2)}</td>
                   <td className="px-4 py-3 text-navy-700/80">{r.frequency}</td>
