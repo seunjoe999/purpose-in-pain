@@ -3,7 +3,11 @@
 // needed. The frontend is a separate Vercel project; this function only
 // serves /api/* (see backend/vercel.json).
 import app, { attachFallbackHandlers } from '../src/app';
+import { bootstrapAdmin } from '../src/db/bootstrapAdmin';
 
 attachFallbackHandlers();
+
+// Ensure admin user exists on every cold start (safe upsert, no-op if unchanged).
+bootstrapAdmin();
 
 export default app;

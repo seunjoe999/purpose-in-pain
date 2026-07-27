@@ -1,187 +1,193 @@
 import { Router } from 'express';
-import crypto from 'crypto';
+import Stripe from 'stripe';
 import { z } from 'zod';
 import { pool } from '../db/pool';
 import { sendMail } from '../lib/mailer';
 
 const router = Router();
 
-const PAYSTACK_BASE_URL = 'https://api.paystack.co';
+const CURRENCY_SYMBOLS: Record<string, string> = { GBP: '£', NGN: '₦', USD: '$' };
 
 const DONATION_THANK_YOU_TEXT = `Thank you for sowing into hope. Because of your generosity, a widow will breathe a little easier, a child will move closer to their dreams, and a woman carrying silent pain will be reminded that she is not forgotten. Thank you for choosing to be part of someone's healing story. May God richly bless you.
 
 — Purpose In Pain Initiative CIC`;
 
-async function sendDonationReceipt(donation: { email: string; donor_name: string | null; amount_pence: number; currency: string; frequency: string }) {
-  const amount = (donation.amount_pence / 100).toFixed(2);
+function getStripe() {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) throw new Error('STRIPE_SECRET_KEY is not set. Add it to your environment variables.');
+  return new Stripe(key);
+}
+
+async function sendDonationReceipt(donation: {
+  email: string;
+  donor_name: string | null;
+  amount_pence: number;
+  currency: string;
+  frequency: string;
+}) {
+  const symbol = CURRENCY_SYMBOLS[donation.currency] || donation.currency + ' ';
+  const amount = (donation.amount_pence / 100).toLocaleString('en-GB', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
   await sendMail({
     to: donation.email,
     subject: 'Thank you for your gift — Purpose In Pain Initiative',
-    text: `Dear ${donation.donor_name || 'friend'},\n\nYour ${donation.frequency === 'monthly' ? 'monthly' : 'one-time'} gift of ${donation.currency} ${amount} has been received.\n\n${DONATION_THANK_YOU_TEXT}`,
+    text: `Dear ${donation.donor_name || 'friend'},\n\nYour ${
+      donation.frequency === 'monthly' ? 'monthly' : 'one-time'
+    } gift of ${symbol}${amount} has been received.\n\n${DONATION_THANK_YOU_TEXT}`,
   });
-}
-
-function paystackSecretKey() {
-  const key = process.env.PAYSTACK_SECRET_KEY;
-  if (!key) {
-    throw new Error(
-      'PAYSTACK_SECRET_KEY is not set. Add your Paystack test secret key to backend/.env (see .env.example).'
-    );
-  }
-  return key;
 }
 
 const initSchema = z.object({
   email: z.string().email(),
   donorName: z.string().optional(),
-  amountPounds: z.number().positive('Amount must be greater than zero'),
+  amount: z.number().positive('Amount must be greater than zero'),
+  currency: z.enum(['GBP', 'NGN', 'USD']).default('GBP'),
   frequency: z.enum(['one-time', 'monthly']).default('one-time'),
   callbackUrl: z.string().url().optional(),
+  cancelUrl: z.string().url().optional(),
 });
 
-// ── Initialize a Paystack transaction (one-time or monthly) ────────────────
+// ── Create a Stripe Checkout Session ─────────────────────────────────────────
 router.post('/initialize', async (req, res) => {
   const parsed = initSchema.safeParse(req.body);
-  if (!parsed.success) {
-    return res.status(400).json({ error: parsed.error.flatten() });
-  }
-  const { email, donorName, amountPounds, frequency, callbackUrl } = parsed.data;
-  const amountPence = Math.round(amountPounds * 100);
-  const currency = process.env.PAYSTACK_CURRENCY || 'GBP';
-  const reference = `pip_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`;
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
+
+  const { email, donorName, amount, currency, frequency, callbackUrl, cancelUrl } = parsed.data;
+  const amountCents = Math.round(amount * 100);
 
   try {
-    const secretKey = paystackSecretKey();
+    const stripe = getStripe();
 
-    let planCode: string | undefined;
+    const productName =
+      frequency === 'monthly'
+        ? 'Monthly Donation — Purpose In Pain Initiative CIC'
+        : 'Donation — Purpose In Pain Initiative CIC';
+
+    const successUrl = callbackUrl
+      ? `${callbackUrl}?session_id={CHECKOUT_SESSION_ID}`
+      : `https://purposeinpain.org/donate/success?session_id={CHECKOUT_SESSION_ID}`;
+
+    const cancelUrlFinal =
+      cancelUrl ||
+      (callbackUrl ? callbackUrl.replace('/donate/success', '/donate') : 'https://purposeinpain.org/donate');
+
+    let session: Stripe.Checkout.Session;
 
     if (frequency === 'monthly') {
-      // Create (or reuse) a Paystack Plan for this amount so Paystack can
-      // automatically bill the donor monthly after their first successful charge.
-      const planRes = await fetch(`${PAYSTACK_BASE_URL}/plan`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${secretKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: `PIP Monthly Giving - £${amountPounds}`,
-          interval: 'monthly',
-          amount: amountPence,
-          currency,
-        }),
+      session = await stripe.checkout.sessions.create({
+        mode: 'subscription',
+        customer_email: email,
+        line_items: [
+          {
+            price_data: {
+              currency: currency.toLowerCase(),
+              unit_amount: amountCents,
+              product_data: { name: productName },
+              recurring: { interval: 'month' },
+            },
+            quantity: 1,
+          },
+        ],
+        success_url: successUrl,
+        cancel_url: cancelUrlFinal,
+        metadata: { donor_name: donorName ?? '', frequency, currency },
       });
-      const planData = (await planRes.json()) as any;
-      if (planRes.ok && planData?.data?.plan_code) {
-        planCode = planData.data.plan_code;
-      }
-      // If plan creation fails we still proceed with a one-time-style charge
-      // rather than blocking the donor — this is logged for follow-up.
-      if (!planCode) {
-        // eslint-disable-next-line no-console
-        console.warn('[donations] Could not create Paystack plan, proceeding without recurring plan.', planData);
-      }
+    } else {
+      session = await stripe.checkout.sessions.create({
+        mode: 'payment',
+        customer_email: email,
+        line_items: [
+          {
+            price_data: {
+              currency: currency.toLowerCase(),
+              unit_amount: amountCents,
+              product_data: { name: productName },
+            },
+            quantity: 1,
+          },
+        ],
+        success_url: successUrl,
+        cancel_url: cancelUrlFinal,
+        metadata: { donor_name: donorName ?? '', frequency, currency },
+      });
     }
 
     await pool.query(
-      `INSERT INTO donations (reference, email, donor_name, amount_pence, currency, frequency, status, paystack_plan_code)
-       VALUES ($1, $2, $3, $4, $5, $6, 'pending', $7)`,
-      [reference, email, donorName ?? null, amountPence, currency, frequency, planCode ?? null]
+      `INSERT INTO donations (reference, email, donor_name, amount_pence, currency, frequency, status)
+       VALUES ($1, $2, $3, $4, $5, $6, 'pending')`,
+      [session.id, email, donorName ?? null, amountCents, currency, frequency]
     );
 
-    const initRes = await fetch(`${PAYSTACK_BASE_URL}/transaction/initialize`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${secretKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email,
-        amount: amountPence,
-        currency,
-        reference,
-        callback_url: callbackUrl,
-        plan: planCode,
-        metadata: {
-          donor_name: donorName,
-          frequency,
-        },
-      }),
-    });
-
-    const initData = (await initRes.json()) as any;
-    if (!initRes.ok || !initData.status) {
-      return res.status(502).json({ error: initData?.message || 'Could not initialize payment with Paystack.' });
-    }
-
-    res.json({
-      authorizationUrl: initData.data.authorization_url,
-      accessCode: initData.data.access_code,
-      reference,
-    });
+    res.json({ checkoutUrl: session.url, sessionId: session.id });
   } catch (err: any) {
-    res.status(500).json({ error: err.message || 'Failed to initialize donation.' });
+    res.status(500).json({ error: err.message || 'Failed to initialize payment.' });
   }
 });
 
-// ── Verify a transaction after redirect from Paystack ───────────────────────
-router.get('/verify/:reference', async (req, res) => {
-  const { reference } = req.params;
+// ── Verify a Stripe Checkout Session after redirect ───────────────────────────
+router.get('/verify/:sessionId', async (req, res) => {
+  const { sessionId } = req.params;
   try {
-    const secretKey = paystackSecretKey();
-    const verifyRes = await fetch(`${PAYSTACK_BASE_URL}/transaction/verify/${encodeURIComponent(reference)}`, {
-      headers: { Authorization: `Bearer ${secretKey}` },
-    });
-    const verifyData = (await verifyRes.json()) as any;
+    const stripe = getStripe();
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-    const status = verifyData?.data?.status === 'success' ? 'success' : 'failed';
+    const status = session.payment_status === 'paid' ? 'success' : 'failed';
 
     const result = await pool.query(
       `UPDATE donations SET status = $1, verified_at = now() WHERE reference = $2 RETURNING *`,
-      [status, reference]
+      [status, sessionId]
     );
 
     if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Donation record not found.' });
+      return res.json({ status, donation: null });
     }
 
     const donation = result.rows[0];
     if (status === 'success' && !donation.receipt_sent_at) {
       await sendDonationReceipt(donation);
-      await pool.query(`UPDATE donations SET receipt_sent_at = now() WHERE reference = $1`, [reference]);
+      await pool.query(`UPDATE donations SET receipt_sent_at = now() WHERE reference = $1`, [sessionId]);
     }
 
     res.json({ status, donation });
   } catch (err: any) {
-    res.status(500).json({ error: err.message || 'Failed to verify donation.' });
+    res.status(500).json({ error: err.message || 'Failed to verify payment.' });
   }
 });
 
-// ── Paystack webhook (recommended production path for confirming payments) ─
+// ── Stripe webhook (recommended production path) ──────────────────────────────
+// NOTE: This route receives a raw Buffer body — app.ts mounts
+// express.raw() for /api/donations/webhook before express.json().
 router.post('/webhook', async (req: any, res) => {
-  const secretKey = process.env.PAYSTACK_SECRET_KEY;
-  const signature = req.headers['x-paystack-signature'];
+  const sig = req.headers['stripe-signature'];
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-  if (secretKey && signature) {
-    const hash = crypto.createHmac('sha512', secretKey).update(JSON.stringify(req.body)).digest('hex');
-    if (hash !== signature) {
-      return res.status(401).send('Invalid signature');
+  let event: Stripe.Event;
+  try {
+    const stripe = getStripe();
+    if (webhookSecret && sig) {
+      event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+    } else {
+      event = req.body as Stripe.Event;
     }
+  } catch (err: any) {
+    return res.status(400).json({ error: `Webhook error: ${err.message}` });
   }
 
-  const event = req.body;
-  if (event?.event === 'charge.success') {
-    const reference = event.data?.reference;
-    if (reference) {
-      const result = await pool.query(
-        `UPDATE donations SET status = 'success', verified_at = now() WHERE reference = $1 RETURNING *`,
-        [reference]
-      );
-      const donation = result.rows[0];
-      if (donation && !donation.receipt_sent_at) {
-        await sendDonationReceipt(donation);
-        await pool.query(`UPDATE donations SET receipt_sent_at = now() WHERE reference = $1`, [reference]);
-      }
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object as Stripe.Checkout.Session;
+    const result = await pool.query(
+      `UPDATE donations SET status = 'success', verified_at = now() WHERE reference = $1 RETURNING *`,
+      [session.id]
+    );
+    const donation = result.rows[0];
+    if (donation && !donation.receipt_sent_at) {
+      const stripe = getStripe();
+      const fullSession = await stripe.checkout.sessions.retrieve(session.id);
+      const donationWithEmail = { ...donation, email: fullSession.customer_email || donation.email };
+      await sendDonationReceipt(donationWithEmail);
+      await pool.query(`UPDATE donations SET receipt_sent_at = now() WHERE reference = $1`, [session.id]);
     }
   }
 

@@ -19,6 +19,9 @@ ensureTable().catch(console.error);
 
 // Public: read all settings
 router.get('/', async (_req, res) => {
+  // No caching — settings must always reflect the latest admin changes
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
   try {
     const result = await pool.query('SELECT key, value FROM site_settings');
     const out: Record<string, any> = {};

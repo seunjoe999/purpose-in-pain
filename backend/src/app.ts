@@ -29,6 +29,8 @@ app.use(
   })
 );
 app.use(morgan('dev'));
+// Stripe webhooks need the raw body — must come before express.json()
+app.use('/api/donations/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());
 
 app.get('/api/health', (_req, res) => {
