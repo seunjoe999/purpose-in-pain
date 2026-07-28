@@ -150,16 +150,23 @@ export default function BlogPost() {
       </section>
 
       <section className="container-page py-16 sm:py-20">
-        {post.cover_image && (
-          <img src={post.cover_image} alt={post.title} className="mb-10 max-h-96 w-full rounded-2xl object-cover" />
-        )}
-        <div className="mx-auto max-w-3xl space-y-5 text-navy-700/85 leading-relaxed">
-          {post.body.split('\n').filter(Boolean).map((para, i) => (
-            <p key={i}>{para}</p>
-          ))}
+        <div className={`flex flex-col gap-10 ${post.cover_image ? 'lg:flex-row lg:items-start' : ''}`}>
+          {post.cover_image && (
+            <img
+              src={post.cover_image}
+              alt={post.title}
+              className="w-full rounded-2xl object-cover shadow-soft lg:w-64 lg:shrink-0"
+            />
+          )}
+          <div className="flex-1">
+            <div className="space-y-5 text-navy-700/85 leading-relaxed">
+              {post.body.split('\n').filter(Boolean).map((para, i) => (
+                <p key={i}>{para.replace(/[—–]/g, ' - ')}</p>
+              ))}
+            </div>
+            <CommentsSection slug={post.slug} />
+          </div>
         </div>
-
-        <CommentsSection slug={post.slug} />
       </section>
     </article>
   );
