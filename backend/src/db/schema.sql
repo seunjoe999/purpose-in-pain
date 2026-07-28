@@ -85,6 +85,16 @@ CREATE TABLE IF NOT EXISTS events (
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- ─── Blog comments ───────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS blog_comments (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  post_id       UUID NOT NULL REFERENCES blog_posts(id) ON DELETE CASCADE,
+  author_name   TEXT NOT NULL,
+  body          TEXT NOT NULL,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 CREATE INDEX IF NOT EXISTS idx_blog_posts_published ON blog_posts (published, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_blog_comments_post ON blog_comments (post_id, created_at ASC);
 CREATE INDEX IF NOT EXISTS idx_events_date ON events (event_date);
 CREATE INDEX IF NOT EXISTS idx_donations_status ON donations (status);

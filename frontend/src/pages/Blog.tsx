@@ -112,17 +112,21 @@ export default function Blog() {
         {!posts && !error && <p className="text-navy-700/60">Loading posts…</p>}
         {posts && posts.length === 0 && <p className="text-navy-700/60">No posts yet. Check back soon.</p>}
 
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="flex flex-col gap-6">
           {pagePosts?.map((post) => (
             <Link
               key={post.id}
               to={`/blog/${post.slug}`}
-              className="card flex flex-col overflow-hidden p-0 transition hover:-translate-y-1 hover:shadow-lg"
+              className="card flex flex-row overflow-hidden p-0 transition hover:-translate-y-1 hover:shadow-lg"
             >
               {post.cover_image && (
-                <img src={post.cover_image} alt={post.title} className="aspect-[4/3] w-full object-cover object-top" />
+                <img
+                  src={post.cover_image}
+                  alt={post.title}
+                  className="h-44 w-44 shrink-0 object-cover object-top sm:h-52 sm:w-52"
+                />
               )}
-              <div className="flex flex-1 flex-col p-6">
+              <div className="flex flex-1 flex-col justify-center p-6">
                 <p className="text-xs text-navy-700/50">
                   {new Date(post.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
                   {post.author ? ` · ${post.author}` : ''}

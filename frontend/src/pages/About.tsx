@@ -50,47 +50,49 @@ export default function About() {
       {/* Problem, Gap, Solution */}
       <section className="bg-sky-50/60 py-16 sm:py-20">
         <div className="container-page">
-          <h2 className="section-heading">The Problem, the Gap, and Our Solution</h2>
-          <div className="mt-10 grid gap-8 lg:grid-cols-3">
+          <div className="grid items-start gap-12 lg:grid-cols-[1fr_280px]">
             <div>
-              <h3 className="font-display text-lg font-bold text-navy-700">The Problem</h3>
-              <ul className="mt-3 space-y-2 text-sm text-navy-700/80">
-                <li>Postpartum care focuses heavily on the baby, not the mother.</li>
-                <li>Many women don't recognise postpartum depression/anxiety early.</li>
-                <li>Many feel ashamed to ask for help.</li>
-                <li>Many lose their sense of self and purpose.</li>
-                <li>Many are overwhelmed by expectations.</li>
-                <li>Many lack practical tools to recover emotionally and mentally.</li>
-              </ul>
+              <h2 className="section-heading">The Problem, the Gap, and Our Solution</h2>
+              <div className="mt-10 grid gap-8 sm:grid-cols-3">
+                <div>
+                  <h3 className="font-display text-lg font-bold text-navy-700">The Problem</h3>
+                  <ul className="mt-3 space-y-2 text-sm text-navy-700/80">
+                    <li>Postpartum care focuses heavily on the baby, not the mother.</li>
+                    <li>Many women don't recognise postpartum depression/anxiety early.</li>
+                    <li>Many feel ashamed to ask for help.</li>
+                    <li>Many lose their sense of self and purpose.</li>
+                    <li>Many are overwhelmed by expectations.</li>
+                    <li>Many lack practical tools to recover emotionally and mentally.</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="font-display text-lg font-bold text-navy-700">The Gap</h3>
+                  <ul className="mt-3 space-y-2 text-sm text-navy-700/80">
+                    <li>Lack of safe, accessible, culturally sensitive postpartum mental health education.</li>
+                    <li>Lack of identity-restoration conversations for mothers.</li>
+                    <li>Lack of early intervention education.</li>
+                    <li>Lack of practical self-care tools for everyday mothers.</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="font-display text-lg font-bold text-navy-700">Our Solution</h3>
+                  <p className="mt-3 text-sm text-navy-700/80">
+                    A one-day, live, expert-led (Zoom / in-person) experience that:
+                  </p>
+                  <ul className="mt-3 space-y-2 text-sm text-navy-700/80">
+                    <li>Educates</li>
+                    <li>Normalizes help-seeking</li>
+                    <li>Restores identity</li>
+                    <li>Equips mothers with practical tools</li>
+                    <li>Provides clarity on when and how to seek help</li>
+                  </ul>
+                </div>
+              </div>
             </div>
-            <div>
-              <h3 className="font-display text-lg font-bold text-navy-700">The Gap</h3>
-              <ul className="mt-3 space-y-2 text-sm text-navy-700/80">
-                <li>Lack of safe, accessible, culturally sensitive postpartum mental health education.</li>
-                <li>Lack of identity-restoration conversations for mothers.</li>
-                <li>Lack of early intervention education.</li>
-                <li>Lack of practical self-care tools for everyday mothers.</li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-display text-lg font-bold text-navy-700">Our Solution</h3>
-              <p className="mt-3 text-sm text-navy-700/80">
-                A one-day, live, expert-led (Zoom / in-person) experience that:
-              </p>
-              <ul className="mt-3 space-y-2 text-sm text-navy-700/80">
-                <li>Educates</li>
-                <li>Normalizes help-seeking</li>
-                <li>Restores identity</li>
-                <li>Equips mothers with practical tools</li>
-                <li>Provides clarity on when and how to seek help</li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-10">
             <img
               src="/assets/images/problem-gap-solution.png"
               alt="Purpose In Pain Initiative: the problem, the gap, and our solution"
-              className="w-full rounded-2xl object-contain shadow-soft"
+              className="mx-auto w-full rounded-2xl object-contain shadow-soft"
             />
           </div>
         </div>

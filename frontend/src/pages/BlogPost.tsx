@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { apiGet } from '../lib/api';
+import { apiGet, apiPost } from '../lib/api';
 
 type Post = {
   id: string;
@@ -11,6 +11,101 @@ type Post = {
   author: string | null;
   created_at: string;
 };
+
+type Comment = {
+  id: string;
+  author_name: string;
+  body: string;
+  created_at: string;
+};
+
+function CommentsSection({ slug }: { slug: string }) {
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [form, setForm] = useState({ author_name: '', body: '' });
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    apiGet(`/blog/${slug}/comments`)
+      .then((data: Comment[]) => setComments(data))
+      .catch(() => {});
+  }, [slug]);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus('loading');
+    setError('');
+    try {
+      const newComment: Comment = await apiPost(`/blog/${slug}/comments`, form);
+      setComments((prev) => [...prev, newComment]);
+      setForm({ author_name: '', body: '' });
+      setStatus('idle');
+    } catch (err: any) {
+      setError(err.message || 'Something went wrong. Please try again.');
+      setStatus('error');
+    }
+  }
+
+  return (
+    <div className="mx-auto max-w-3xl mt-16">
+      <h2 className="font-display text-2xl font-bold text-navy-700">
+        Comments {comments.length > 0 && <span className="text-navy-700/40">({comments.length})</span>}
+      </h2>
+
+      {comments.length === 0 && (
+        <p className="mt-4 text-sm text-navy-700/50">No comments yet. Be the first to share your thoughts!</p>
+      )}
+
+      <div className="mt-6 space-y-5">
+        {comments.map((c) => (
+          <div key={c.id} className="card">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sky-100 font-display text-sm font-bold text-sky-600">
+                {c.author_name.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-navy-700">{c.author_name}</p>
+                <p className="text-xs text-navy-700/50">
+                  {new Date(c.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                </p>
+              </div>
+            </div>
+            <p className="mt-3 text-sm text-navy-700/80 leading-relaxed">{c.body}</p>
+          </div>
+        ))}
+      </div>
+
+      <form onSubmit={handleSubmit} className="card mt-8 space-y-4">
+        <h3 className="font-display text-lg font-bold text-navy-700">Leave a Comment</h3>
+        <div>
+          <label htmlFor="comment-name">Your Name <span className="text-xs text-red-400">*</span></label>
+          <input
+            id="comment-name"
+            required
+            value={form.author_name}
+            onChange={(e) => setForm({ ...form, author_name: e.target.value })}
+            placeholder="e.g. Sarah Johnson"
+          />
+        </div>
+        <div>
+          <label htmlFor="comment-body">Comment <span className="text-xs text-red-400">*</span></label>
+          <textarea
+            id="comment-body"
+            rows={4}
+            required
+            value={form.body}
+            onChange={(e) => setForm({ ...form, body: e.target.value })}
+            placeholder="Share your thoughts…"
+          />
+        </div>
+        {error && <p className="text-sm text-red-500">{error}</p>}
+        <button type="submit" disabled={status === 'loading'} className="btn-primary">
+          {status === 'loading' ? 'Posting…' : 'Post Comment'}
+        </button>
+      </form>
+    </div>
+  );
+}
 
 export default function BlogPost() {
   const { slug } = useParams();
@@ -63,6 +158,8 @@ export default function BlogPost() {
             <p key={i}>{para}</p>
           ))}
         </div>
+
+        <CommentsSection slug={post.slug} />
       </section>
     </article>
   );
