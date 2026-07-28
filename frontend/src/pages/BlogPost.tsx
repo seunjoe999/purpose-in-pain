@@ -155,7 +155,7 @@ export default function BlogPost() {
             <img
               src={post.cover_image}
               alt={post.title}
-              className="w-full rounded-2xl object-cover shadow-soft lg:w-64 lg:shrink-0"
+              className="aspect-square w-full rounded-2xl object-cover shadow-soft lg:w-64 lg:shrink-0"
             />
           )}
           <div className="flex-1">
