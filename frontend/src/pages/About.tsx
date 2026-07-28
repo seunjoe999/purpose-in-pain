@@ -53,7 +53,7 @@ export default function About() {
           <div className="grid items-start gap-12 lg:grid-cols-[1fr_280px]">
             <div>
               <h2 className="section-heading">The Problem, the Gap, and Our Solution</h2>
-              <div className="mt-10 grid gap-8 sm:grid-cols-3">
+              <div className="mt-10 flex flex-col gap-8">
                 <div>
                   <h3 className="font-display text-lg font-bold text-navy-700">The Problem</h3>
                   <ul className="mt-3 space-y-2 text-sm text-navy-700/80">

@@ -101,7 +101,7 @@ export default function Home() {
               </a>
             </div>
           </div>
-          <div className="relative mx-auto max-w-sm lg:max-w-md">
+          <div className="relative mx-auto max-w-sm lg:max-w-xl">
             <img
               src="/assets/images/mission-statement.png"
               alt="Purpose In Pain Initiative mission statement graphic"
