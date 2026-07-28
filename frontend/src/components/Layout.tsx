@@ -31,7 +31,7 @@ function BrandsSlider() {
 
   return (
     <div className="border-t border-navy-100 bg-white py-5">
-      <p className="container-page mb-3 text-center text-xs font-bold uppercase tracking-wide text-navy-700">
+      <p className="container-page mb-3 text-center text-sm font-bold uppercase tracking-wide text-navy-700">
         Our Partners &amp; Collaborators
       </p>
       <div

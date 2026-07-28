@@ -68,7 +68,7 @@ export default function Home() {
       <section className="relative overflow-hidden bg-navy-700 text-white">
         <div className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-sky-500/20 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-32 -left-16 h-96 w-96 rounded-full bg-accent-pink/10 blur-3xl" />
-        <div className="container-page relative grid gap-10 py-20 sm:py-28 lg:grid-cols-2 lg:items-center">
+        <div className="container-page relative grid gap-10 py-20 sm:py-28 lg:grid-cols-2 lg:items-start">
           <div>
             <span className="inline-block rounded-full bg-sky-500/15 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-sky-300">
               {h.hero_badge}
@@ -147,8 +147,8 @@ export default function Home() {
       {books.length > 0 && (
         <section className="bg-sky-50/60 py-10 sm:py-14">
           <div className="container-page">
-            <p className="text-sm font-semibold uppercase tracking-wide text-sky-500">Recommended Reading</p>
-            <div className="mt-4 flex flex-wrap gap-6">
+            <p className="text-center text-sm font-semibold uppercase tracking-wide text-sky-500">Recommended Reading</p>
+            <div className="mt-4 flex flex-wrap justify-center gap-6">
               {books.map((book) => (
                 <Link
                   key={book.slug}

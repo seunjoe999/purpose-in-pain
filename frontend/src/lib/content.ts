@@ -142,7 +142,7 @@ export const socialLinks = {
 };
 
 export const contactInfo = {
-  email: 'purposeinpain1@gmail.com',
+  email: 'info@purposeinpaininitiative.org',
   phone: '+44 7459 837086',
   whatsapp: '+44 7459 837086',
 };

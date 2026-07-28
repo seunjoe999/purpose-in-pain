@@ -163,20 +163,13 @@ export default function About() {
 
       {/* Collaborators */}
       <section className="container-page py-16 sm:py-20">
-        <div className="grid items-center gap-10 lg:grid-cols-2">
-          <div>
-            <h2 className="section-heading">Our Collaborators</h2>
-            <p className="mt-4 text-navy-700/80">
-              We're grateful to partner with a growing network of organisations, businesses, and community groups
-              who support our work in education, prevention, women's wellbeing, mental health advocacy, and
-              community impact.
-            </p>
-          </div>
-          <img
-            src="/assets/images/collaborators.png"
-            alt="Purpose In Pain Initiative collaborators and supporting organisations"
-            className="aspect-square w-full rounded-2xl object-cover shadow-soft"
-          />
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="section-heading">Our Collaborators</h2>
+          <p className="mt-4 text-navy-700/80">
+            We're grateful to partner with a growing network of organisations, businesses, and community groups
+            who support our work in education, prevention, women's wellbeing, mental health advocacy, and
+            community impact.
+          </p>
         </div>
       </section>
 
