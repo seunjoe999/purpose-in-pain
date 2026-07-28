@@ -68,44 +68,46 @@ export default function Home() {
       <section className="relative overflow-hidden bg-navy-700 text-white">
         <div className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-sky-500/20 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-32 -left-16 h-96 w-96 rounded-full bg-accent-pink/10 blur-3xl" />
-        <div className="container-page relative grid gap-10 py-20 sm:py-28 lg:grid-cols-2 lg:items-center">
-          <div>
-            <span className="inline-block rounded-full bg-sky-500/15 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-sky-300">
-              {h.hero_badge}
-            </span>
-            <h1 className="mt-5 font-display text-4xl font-extrabold leading-tight sm:text-5xl">
-              {h.hero_title}
-            </h1>
-            <p className="mt-5 max-w-xl text-lg text-white/80">
-              {h.hero_subtitle}
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <Link to="/donate" className="btn-primary">Donate Today</Link>
-              <Link to="/volunteer" className="btn-secondary border-white text-white hover:bg-white hover:text-navy-700">
-                Volunteer With Us
-              </Link>
-              <a
-                href={socialLinks.community}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-2 rounded-2xl bg-white/5 p-2 pr-4 transition hover:bg-white/10"
-              >
-                <img
-                  src="/assets/images/design-1.png"
-                  alt="Join the Purpose In Pain Community flyer"
-                  className="h-10 w-10 rounded-xl object-cover"
-                />
-                <span className="text-sm font-semibold text-sky-300 underline decoration-sky-300/50 underline-offset-4">
-                  Join Our Community
-                </span>
-              </a>
+        <div className="container-page relative grid py-20 sm:py-28 lg:grid-cols-2">
+          <div className="flex flex-col justify-between gap-8 lg:pr-10">
+            <div>
+              <span className="inline-block rounded-full bg-sky-500/15 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-sky-300">
+                {h.hero_badge}
+              </span>
+              <h1 className="mt-5 font-display text-4xl font-extrabold leading-tight sm:text-5xl">
+                {h.hero_title}
+              </h1>
+              <p className="mt-5 max-w-xl text-lg text-white/80">
+                {h.hero_subtitle}
+              </p>
+              <div className="mt-8 flex flex-wrap gap-4">
+                <Link to="/donate" className="btn-primary">Donate Today</Link>
+                <Link to="/volunteer" className="btn-secondary border-white text-white hover:bg-white hover:text-navy-700">
+                  Volunteer With Us
+                </Link>
+              </div>
             </div>
+            <a
+              href={socialLinks.community}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-3 rounded-2xl bg-white/5 p-2 pr-4 transition hover:bg-white/10"
+            >
+              <img
+                src="/assets/images/design-1.png"
+                alt="Join the Purpose In Pain Community flyer"
+                className="h-16 w-16 rounded-xl object-cover"
+              />
+              <span className="text-sm font-semibold text-sky-300 underline decoration-sky-300/50 underline-offset-4">
+                Join the Purpose In Pain Community
+              </span>
+            </a>
           </div>
           <div className="relative mx-auto max-w-sm lg:max-w-xl">
             <img
               src="/assets/images/mission-statement.png"
               alt="Purpose In Pain Initiative mission statement graphic"
-              className="w-full rounded-3xl shadow-soft"
+              className="h-full w-full rounded-3xl object-cover shadow-soft"
             />
           </div>
         </div>
