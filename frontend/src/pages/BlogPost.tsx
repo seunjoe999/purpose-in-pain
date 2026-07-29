@@ -47,20 +47,20 @@ function CommentsSection({ slug }: { slug: string }) {
   }
 
   return (
-    <div className="mx-auto max-w-3xl mt-16">
-      <h2 className="font-display text-2xl font-bold text-navy-700">
+    <div>
+      <h2 className="font-display text-xl font-bold text-navy-700">
         Comments {comments.length > 0 && <span className="text-navy-700/40">({comments.length})</span>}
       </h2>
 
       {comments.length === 0 && (
-        <p className="mt-4 text-sm text-navy-700/50">No comments yet. Be the first to share your thoughts!</p>
+        <p className="mt-3 text-sm text-navy-700/50">No comments yet. Be the first!</p>
       )}
 
-      <div className="mt-6 space-y-5">
+      <div className="mt-4 space-y-4">
         {comments.map((c) => (
           <div key={c.id} className="card">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sky-100 font-display text-sm font-bold text-sky-600">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sky-100 font-display text-sm font-bold text-sky-600">
                 {c.author_name.charAt(0).toUpperCase()}
               </div>
               <div>
@@ -70,13 +70,13 @@ function CommentsSection({ slug }: { slug: string }) {
                 </p>
               </div>
             </div>
-            <p className="mt-3 text-sm text-navy-700/80 leading-relaxed">{c.body}</p>
+            <p className="mt-2 text-sm text-navy-700/80 leading-relaxed">{c.body}</p>
           </div>
         ))}
       </div>
 
-      <form onSubmit={handleSubmit} className="card mt-8 space-y-4">
-        <h3 className="font-display text-lg font-bold text-navy-700">Leave a Comment</h3>
+      <form onSubmit={handleSubmit} className="card mt-6 space-y-4">
+        <h3 className="font-display text-base font-bold text-navy-700">Leave a Comment</h3>
         <div>
           <label htmlFor="comment-name">Your Name <span className="text-xs text-red-400">*</span></label>
           <input
@@ -99,7 +99,7 @@ function CommentsSection({ slug }: { slug: string }) {
           />
         </div>
         {error && <p className="text-sm text-red-500">{error}</p>}
-        <button type="submit" disabled={status === 'loading'} className="btn-primary">
+        <button type="submit" disabled={status === 'loading'} className="btn-primary w-full">
           {status === 'loading' ? 'Posting…' : 'Post Comment'}
         </button>
       </form>
@@ -136,35 +136,37 @@ export default function BlogPost() {
 
   return (
     <article>
-      <section className="bg-navy-700 py-16 text-white sm:py-20">
-        <div className="container-page">
-          <Link to="/blog" className="text-sm font-semibold text-sky-400 hover:text-sky-300">
-            ← All Posts
-          </Link>
-          <h1 className="mt-4 font-display text-4xl font-extrabold sm:text-5xl">{post.title}</h1>
-          <p className="mt-3 text-sm text-white/60">
-            {new Date(post.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
-            {post.author ? ` · ${post.author}` : ''}
-          </p>
-        </div>
-      </section>
-
-      <section className="container-page py-16 sm:py-20">
-        <div className={`flex flex-col gap-10 ${post.cover_image ? 'lg:flex-row lg:items-start' : ''}`}>
+      {/* Header: title on left, image on right */}
+      <section className="bg-navy-700 text-white">
+        <div className={`container-page grid items-stretch gap-0 ${post.cover_image ? 'lg:grid-cols-2' : ''}`}>
+          <div className="flex flex-col justify-center py-16 sm:py-20 lg:pr-10">
+            <Link to="/blog" className="text-sm font-semibold text-sky-400 hover:text-sky-300">
+              ← All Posts
+            </Link>
+            <h1 className="mt-4 font-display text-4xl font-extrabold sm:text-5xl">{post.title}</h1>
+            <p className="mt-3 text-sm text-white/60">
+              {new Date(post.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
+              {post.author ? ` · ${post.author}` : ''}
+            </p>
+          </div>
           {post.cover_image && (
             <img
               src={post.cover_image}
               alt={post.title}
-              className="aspect-square w-full rounded-2xl object-cover shadow-soft lg:w-64 lg:shrink-0"
+              className="hidden h-full w-full object-cover lg:block"
             />
           )}
-          <div className="flex-1">
-            <div className="space-y-5 text-navy-700/85 leading-relaxed">
-              {post.body.split('\n').filter(Boolean).map((para, i) => (
-                <p key={i}>{para.replace(/[—–]/g, ' - ')}</p>
-              ))}
-            </div>
-            <CommentsSection slug={post.slug} />
+        </div>
+      </section>
+
+      {/* Body: comments left, article text right in column layout */}
+      <section className="container-page py-16 sm:py-20">
+        <div className="grid gap-10 lg:grid-cols-[320px_1fr] lg:items-start">
+          <CommentsSection slug={post.slug} />
+          <div className="columns-2 gap-8 text-navy-700/85 leading-relaxed [&>p]:mb-5 [&>p]:break-inside-avoid">
+            {post.body.split('\n').filter(Boolean).map((para, i) => (
+              <p key={i}>{para.replace(/[—–]/g, ' - ')}</p>
+            ))}
           </div>
         </div>
       </section>
